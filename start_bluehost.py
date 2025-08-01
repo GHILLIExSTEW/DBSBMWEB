@@ -55,15 +55,15 @@ def start_flask_server():
         from webapp import app
         
         # Run the Flask server
-        print("🚀 Starting Flask server on port 8443...")
-        print("🌐 Access your application at: https://bet-tracking-ai.com:8443")
-        print("📊 Health check: https://bet-tracking-ai.com:8443/health")
-        print("📄 Subscription page: https://bet-tracking-ai.com:8443/subscriptions")
+        print("🚀 Starting Flask server on port 3000...")
+        print("🌐 Access your application at: https://bet-tracking-ai.com:3000")
+        print("📊 Health check: https://bet-tracking-ai.com:3000/health")
+        print("📄 Subscription page: https://bet-tracking-ai.com:3000/subscriptions")
         print("\n🔄 Press Ctrl+C to stop the server")
         
         app.run(
             host='0.0.0.0',  # Allow external connections
-            port=8443,       # Alternative HTTPS port
+            port=3000,       # Alternative port
             debug=False,
             threaded=True
         )
