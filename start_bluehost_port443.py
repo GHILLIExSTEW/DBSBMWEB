@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Bluehost Flask Application Startup Script
+Bluehost Flask Application Startup Script - Port 80 Version
 For bet-tracking-ai.com hosted in public_html/website_1503e79b
 """
 
@@ -46,7 +46,7 @@ def install_dependencies():
         return False
 
 def start_flask_server():
-    """Start the Flask application."""
+    """Start the Flask application on port 443 with SSL."""
     try:
         # Change to the cgi-bin directory
         os.chdir(app_dir)
@@ -54,27 +54,31 @@ def start_flask_server():
         # Import and run the Flask app
         from webapp import app
         
-        # Run the Flask server
-        print("🚀 Starting Flask server on port 8443...")
-        print("🌐 Access your application at: https://bet-tracking-ai.com:8443")
-        print("📊 Health check: https://bet-tracking-ai.com:8443/health")
-        print("📄 Subscription page: https://bet-tracking-ai.com:8443/subscriptions")
+        # Run the Flask server on port 443 (HTTPS)
+        print("🚀 Starting Flask server on port 443 (HTTPS)...")
+        print("🌐 Access your application at: https://bet-tracking-ai.com")
+        print("📊 Health check: https://bet-tracking-ai.com/health")
+        print("📄 Subscription page: https://bet-tracking-ai.com/subscriptions")
         print("\n🔄 Press Ctrl+C to stop the server")
         
         app.run(
             host='0.0.0.0',  # Allow external connections
-            port=8443,       # Alternative HTTPS port
+            port=443,        # Standard HTTPS port
             debug=False,
-            threaded=True
+            threaded=True,
+            ssl_context='adhoc'  # Use Flask's built-in SSL
         )
         
     except Exception as e:
         print(f"❌ Failed to start Flask server: {e}")
+        if "Permission denied" in str(e):
+            print("💡 Port 443 requires root access. Try port 8443 instead.")
+            print("💡 Or contact Bluehost support about SSL configuration.")
         return False
 
 def main():
     """Main startup function."""
-    print("🎰 Bet Tracking AI - Bluehost Deployment")
+    print("🎰 Bet Tracking AI - Bluehost Deployment (HTTPS Port 443)")
     print("=" * 50)
     
     # Setup environment

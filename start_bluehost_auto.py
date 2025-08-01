@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Bluehost Flask Application Startup Script
+Bluehost Flask Application Startup Script - Alternative HTTPS Ports
 For bet-tracking-ai.com hosted in public_html/website_1503e79b
 """
 
@@ -45,37 +45,47 @@ def install_dependencies():
         print("💡 Try installing manually: pip install --user flask python-dotenv mysql-connector-python requests")
         return False
 
-def start_flask_server():
-    """Start the Flask application."""
-    try:
-        # Change to the cgi-bin directory
-        os.chdir(app_dir)
-        
-        # Import and run the Flask app
-        from webapp import app
-        
-        # Run the Flask server
-        print("🚀 Starting Flask server on port 8443...")
-        print("🌐 Access your application at: https://bet-tracking-ai.com:8443")
-        print("📊 Health check: https://bet-tracking-ai.com:8443/health")
-        print("📄 Subscription page: https://bet-tracking-ai.com:8443/subscriptions")
-        print("\n🔄 Press Ctrl+C to stop the server")
-        
-        app.run(
-            host='0.0.0.0',  # Allow external connections
-            port=8443,       # Alternative HTTPS port
-            debug=False,
-            threaded=True
-        )
-        
-    except Exception as e:
-        print(f"❌ Failed to start Flask server: {e}")
-        return False
+def try_ports():
+    """Try different HTTPS ports that might be available."""
+    # Common alternative HTTPS ports that hosting providers often allow
+    ports_to_try = [8443, 8080, 3000, 5000, 8000]
+    
+    for port in ports_to_try:
+        try:
+            print(f"🔍 Trying port {port}...")
+            
+            # Change to the cgi-bin directory
+            os.chdir(app_dir)
+            
+            # Import and run the Flask app
+            from webapp import app
+            
+            print(f"🚀 Starting Flask server on port {port} (HTTPS)...")
+            print(f"🌐 Access your application at: https://bet-tracking-ai.com:{port}")
+            print(f"📊 Health check: https://bet-tracking-ai.com:{port}/health")
+            print(f"📄 Subscription page: https://bet-tracking-ai.com:{port}/subscriptions")
+            print(f"\n🔄 Press Ctrl+C to stop the server")
+            
+            app.run(
+                host='0.0.0.0',  # Allow external connections
+                port=port,
+                debug=False,
+                threaded=True
+            )
+            
+            return True  # If we get here, the server started successfully
+            
+        except Exception as e:
+            print(f"❌ Port {port} failed: {e}")
+            continue
+    
+    print("❌ All ports failed. You may need to contact Bluehost support.")
+    return False
 
 def main():
     """Main startup function."""
-    print("🎰 Bet Tracking AI - Bluehost Deployment")
-    print("=" * 50)
+    print("🎰 Bet Tracking AI - Bluehost Deployment (Alternative Ports)")
+    print("=" * 60)
     
     # Setup environment
     if not setup_environment():
@@ -85,8 +95,13 @@ def main():
     if not install_dependencies():
         return 1
     
-    # Start the server
-    start_flask_server()
+    # Try different ports
+    if not try_ports():
+        print("\n💡 Suggestions:")
+        print("1. Contact Bluehost support about opening custom ports")
+        print("2. Ask about their recommended way to deploy Flask apps")
+        print("3. Consider using their CGI setup instead")
+        return 1
     
     return 0
 
