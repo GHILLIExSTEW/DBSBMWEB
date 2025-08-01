@@ -28,14 +28,21 @@ def setup_environment():
 def install_dependencies():
     """Install required Python packages."""
     try:
-        # Install packages from requirements.txt
+        # Try minimal requirements first (for memory-constrained environments)
+        minimal_req = Path(__file__).parent / 'cgi-bin' / 'requirements_minimal.txt'
+        full_req = Path(__file__).parent / 'requirements.txt'
+        
+        req_file = minimal_req if minimal_req.exists() else full_req
+        
+        print(f"📦 Installing dependencies from {req_file.name}...")
         subprocess.run([
-            sys.executable, '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
+            sys.executable, '-m', 'pip', 'install', '--user', '-r', str(req_file)
         ], check=True, cwd=Path(__file__).parent)
         print("✅ Dependencies installed successfully")
         return True
     except subprocess.CalledProcessError as e:
         print(f"❌ Failed to install dependencies: {e}")
+        print("💡 Try installing manually: pip install --user flask python-dotenv mysql-connector-python requests")
         return False
 
 def start_flask_server():
