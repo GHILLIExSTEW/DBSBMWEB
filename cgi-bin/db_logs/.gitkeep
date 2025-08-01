@@ -1,0 +1,2 @@
+# This file ensures the db_logs directory is tracked by git even when empty
+# The db_logs directory contains application logs for debugging and monitoring

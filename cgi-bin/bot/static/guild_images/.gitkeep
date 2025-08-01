@@ -1,0 +1,2 @@
+# This file ensures the guild_images directory is tracked by git even when empty
+# The guild_images directory will contain custom images uploaded by guild administrators

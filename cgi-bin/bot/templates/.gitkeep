@@ -1,0 +1,2 @@
+# This file ensures the templates directory is tracked by git even when empty
+# The templates directory contains Jinja2 HTML templates for the Flask web application

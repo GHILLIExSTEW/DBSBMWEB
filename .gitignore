@@ -169,10 +169,11 @@ ehthumbs_vista.db
 *~
 
 # Application-specific
-# Logs
+# Logs (but keep .gitkeep files)
 *.log
 logs/
 db_logs/*.log*
+!db_logs/.gitkeep
 
 # Database
 *.db
@@ -186,9 +187,10 @@ db_logs/*.log*
 .env.test
 .env.production
 
-# Uploads
+# Uploads (but keep directory structure)
 uploads/
-static/guild_images/
+static/guild_images/*
+!static/guild_images/.gitkeep
 static/user_uploads/
 
 # Cache
@@ -209,6 +211,7 @@ tmp/
 temp/
 
 # Don't ignore these important files
+!.gitkeep
 !cgi-bin/.env.example
 !docs/
 !README.md

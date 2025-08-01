@@ -1,0 +1,2 @@
+# This file ensures the bot directory is tracked by git even when empty
+# The bot directory contains templates and static files for the Flask web application

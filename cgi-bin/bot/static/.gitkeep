@@ -1,0 +1,2 @@
+# This file ensures the static directory is tracked by git even when empty
+# The static directory contains CSS, JavaScript, images, and other web assets
