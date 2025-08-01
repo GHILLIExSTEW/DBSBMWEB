@@ -75,6 +75,13 @@ def try_ports():
             
             return True  # If we get here, the server started successfully
             
+        except OSError as e:
+            if "Address already in use" in str(e):
+                print(f"❌ Port {port} is already in use, trying next port...")
+                continue
+            else:
+                print(f"❌ Port {port} failed with error: {e}")
+                continue
         except Exception as e:
             print(f"❌ Port {port} failed: {e}")
             continue
