@@ -57,7 +57,7 @@ def check_files():
         'cgi-bin/webapp.py',
         'cgi-bin/bot/templates',
         'cgi-bin/bot/static',
-        '.env.bluehost',
+        'cgi-bin/.env',
         'requirements.txt'
     ]
     
@@ -82,7 +82,7 @@ def check_database():
         
         # Load environment variables
         from dotenv import load_dotenv
-        load_dotenv(Path(__file__).parent / '.env.bluehost')
+        load_dotenv(Path(__file__).parent / 'cgi-bin' / '.env')
         
         # Test database connection
         import mysql.connector
@@ -115,7 +115,7 @@ def check_discord_config():
     
     try:
         from dotenv import load_dotenv
-        load_dotenv(Path(__file__).parent / '.env.bluehost')
+        load_dotenv(Path(__file__).parent / 'cgi-bin' / '.env')
         
         client_id = os.getenv('DISCORD_CLIENT_ID')
         client_secret = os.getenv('DISCORD_CLIENT_SECRET')
