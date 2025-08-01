@@ -7,6 +7,7 @@ For bet-tracking-ai.com hosted in public_html/website_1503e79b
 import os
 import sys
 import subprocess
+import socket
 from pathlib import Path
 
 # Add the application directory to Python path
@@ -45,14 +46,31 @@ def install_dependencies():
         print("💡 Try installing manually: pip install --user flask python-dotenv mysql-connector-python requests")
         return False
 
+def check_port_available(port):
+    """Check if a port is available for use."""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex(('127.0.0.1', port))
+        sock.close()
+        return result != 0  # Returns True if port is available (connection failed)
+    except:
+        return False
+
 def try_ports():
     """Try different HTTPS ports that might be available."""
     # Common alternative HTTPS ports that hosting providers often allow
     ports_to_try = [8443, 8080, 3000, 5000, 8000]
     
     for port in ports_to_try:
+        print(f"🔍 Checking port {port}...")
+        
+        if not check_port_available(port):
+            print(f"❌ Port {port} is already in use, trying next port...")
+            continue
+            
         try:
-            print(f"🔍 Trying port {port}...")
+            print(f"✅ Port {port} is available!")
             
             # Change to the cgi-bin directory
             os.chdir(app_dir)
@@ -60,7 +78,7 @@ def try_ports():
             # Import and run the Flask app
             from webapp import app
             
-            print(f"🚀 Starting Flask server on port {port} (HTTPS)...")
+            print(f"🚀 Starting Flask server on port {port}...")
             print(f"🌐 Access your application at: https://bet-tracking-ai.com:{port}")
             print(f"📊 Health check: https://bet-tracking-ai.com:{port}/health")
             print(f"📄 Subscription page: https://bet-tracking-ai.com:{port}/subscriptions")
@@ -75,18 +93,11 @@ def try_ports():
             
             return True  # If we get here, the server started successfully
             
-        except OSError as e:
-            if "Address already in use" in str(e):
-                print(f"❌ Port {port} is already in use, trying next port...")
-                continue
-            else:
-                print(f"❌ Port {port} failed with error: {e}")
-                continue
         except Exception as e:
-            print(f"❌ Port {port} failed: {e}")
+            print(f"❌ Port {port} failed with error: {e}")
             continue
     
-    print("❌ All ports failed. You may need to contact Bluehost support.")
+    print("❌ All ports failed or are in use. You may need to contact Bluehost support.")
     return False
 
 def main():
