@@ -1,0 +1,36 @@
+2025-07-31 08:28:11,709 [ERROR] webapp: Error fetching live games: 1054 (42S22): Unknown column 'g.game_id' in 'field list'
+2025-07-31 08:28:12,013 [ERROR] webapp: Error fetching active guilds: 1054 (42S22): Unknown column 'g.is_active' in 'where clause'
+2025-07-31 15:44:17,608 [INFO] __main__: Starting Flask webapp on port 25594
+2025-07-31 15:44:17,609 [INFO] __main__: Environment: production
+2025-07-31 15:44:17,609 [INFO] __main__: Debug mode: True
+2025-07-31 15:44:17,666 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:25594
+ * Running on http://10.67.86.76:25594
+2025-07-31 15:44:17,666 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-07-31 15:44:28,929 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:44:32,935 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:44:32,938 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:44:32] "GET /?id=cffb2aa0-3aa7-42d8-9699-50c1a379dea5&vscodeBrowserReqId=1753991064886 HTTP/1.1" 200 -
+2025-07-31 15:45:03,089 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:45:03,093 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:45:03] "GET /server-list HTTP/1.1" 200 -
+2025-07-31 15:45:45,244 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:45:49,254 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:45:49,255 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:45:49] "GET /?id=cffb2aa0-3aa7-42d8-9699-50c1a379dea5&vscodeBrowserReqId=1753991141230 HTTP/1.1" 200 -
+2025-07-31 15:45:51,517 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:45:55,522 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:45:55,523 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:45:55] "GET / HTTP/1.1" 200 -
+2025-07-31 15:45:55,686 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:45:55] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-07-31 15:46:16,343 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:46:20,348 [ERROR] __main__: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-07-31 15:46:20,371 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:46:20] "GET /dashboard HTTP/1.1" 200 -
+2025-07-31 15:46:20,438 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:46:20] "[33mGET /static/favicon.webp HTTP/1.1[0m" 404 -
+2025-07-31 15:46:33,075 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:46:33] "[33mGET /guild/{guild_id} HTTP/1.1[0m" 404 -
+2025-07-31 15:46:35,660 [INFO] werkzeug: 127.0.0.1 - - [31/Jul/2025 15:46:35] "[33mGET /guild/{guild_id}/live-scores HTTP/1.1[0m" 404 -
+2025-07-31 16:26:06,133 [INFO] __main__: Starting Flask webapp on port 25594
+2025-07-31 16:26:06,134 [INFO] __main__: Environment: development
+2025-07-31 16:26:06,134 [INFO] __main__: Debug mode: True
+2025-07-31 16:26:06,174 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:25594
+ * Running on http://10.67.86.76:25594
+2025-07-31 16:26:06,174 [INFO] werkzeug: [33mPress CTRL+C to quit[0m

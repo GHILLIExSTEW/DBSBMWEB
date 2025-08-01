@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ guild.page_title or (guild.guild_name + ' - Bet Tracking Hub') }}</title>
+    <meta name="description" content="{{ guild.page_description or 'Track bets, compete with friends, and analyze betting performance in our Discord community.' }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: {{ guild.primary_color or '#667eea' }};
+            --secondary-color: {{ guild.secondary_color or '#764ba2' }};
+            --accent-color: {{ guild.accent_color or '#5865F2' }};
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        {% if guild.background_image %}
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/static/guild_images/{{ guild.background_image }}') no-repeat center center;
+            background-size: cover;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        {% endif %}
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .leaderboard-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .rank-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .rank-badge.gold { background: #FFD700; color: #333; }
+        .rank-badge.silver { background: #C0C0C0; color: #333; }
+        .rank-badge.bronze { background: #CD7F32; }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .guild-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        
+        .social-link {
+            display: inline-block;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .social-link:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+        
+        .recent-bet {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid transparent;
+        }
+        
+        .recent-bet.won { border-left-color: #28a745; }
+        .recent-bet.lost { border-left-color: #dc3545; }
+        .recent-bet.pending { border-left-color: #ffc107; }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-circle:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-circle:nth-child(2) {
+            width: 40px;
+            height: 40px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .floating-circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    {% if demo_mode %}
+    <!-- Demo Mode Banner -->
+    <div class="alert alert-info text-center m-0 rounded-0">
+        <strong><i class="fas fa-eye"></i> Demo Mode</strong> - 
+        This is a preview of the guild customization system. 
+        <a href="{{ url_for('subscribe') }}" class="text-decoration-none">Set up the database</a> to create real guild pages!
+    </div>
+    {% endif %}
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="floating-elements">
+            <div class="floating-circle"></div>
+            <div class="floating-circle"></div>
+            <div class="floating-circle"></div>
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 hero-content">
+                    <div class="d-flex align-items-center mb-4">
+                        {% if guild.logo_image %}
+                        <img src="/static/guild_images/{{ guild.logo_image }}" alt="{{ guild.guild_name }} Logo" class="guild-logo me-4">
+                        {% endif %}
+                        <div>
+                            <h1 class="display-4 fw-bold mb-2">{{ guild.guild_name }}</h1>
+                            {% if guild.welcome_message %}
+                            <p class="lead">{{ guild.welcome_message }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if guild.page_description %}
+                    <p class="lead mb-4">{{ guild.page_description }}</p>
+                    {% endif %}
+                    
+                    <!-- Social Links -->
+                    <div class="d-flex align-items-center">
+                        {% if guild.discord_invite %}
+                        <a href="{{ guild.discord_invite }}" class="social-link" target="_blank" title="Join Discord">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        {% endif %}
+                        {% if guild.website_url %}
+                        <a href="{{ guild.website_url }}" class="social-link" target="_blank" title="Visit Website">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                        {% endif %}
+                        {% if guild.twitter_url %}
+                        <a href="{{ guild.twitter_url }}" class="social-link" target="_blank" title="Follow on Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if guild.hero_image %}
+                <div class="col-lg-4 text-center">
+                    <img src="/static/guild_images/{{ guild.hero_image }}" alt="Hero Image" class="img-fluid rounded" style="max-height: 300px;">
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Statistics Section -->
+    {% if guild.show_stats and guild_stats %}
+    <section class="py-5">
+        <div class="container">
+            <h2 class="section-title text-center">Guild Statistics</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="stats-card text-center">
+                        <div class="stat-number">{{ guild_stats.total_bettors or 0 }}</div>
+                        <div class="text-muted">Active Bettors</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card text-center">
+                        <div class="stat-number">{{ guild_stats.total_bets or 0 }}</div>
+                        <div class="text-muted">Total Bets</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card text-center">
+                        <div class="stat-number">
+                            {% if guild_stats.total_bets and guild_stats.total_bets > 0 %}
+                                {{ "%.1f"|format((guild_stats.total_wins / guild_stats.total_bets * 100)) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </div>
+                        <div class="text-muted">Win Rate</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card text-center">
+                        <div class="stat-number">
+                            {% if guild_stats.net_profit >= 0 %}+{% endif %}{{ guild_stats.net_profit or 0 }}
+                        </div>
+                        <div class="text-muted">Net Units</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    
+    <div class="container py-5">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- About Section -->
+                {% if guild.about_section %}
+                <div class="mb-5">
+                    <h3 class="section-title">About Us</h3>
+                    <div class="bg-light p-4 rounded">
+                        {{ guild.about_section|safe }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Features Section -->
+                {% if guild.features_section %}
+                <div class="mb-5">
+                    <h3 class="section-title">Features</h3>
+                    <div class="bg-light p-4 rounded">
+                        {{ guild.features_section|safe }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Rules Section -->
+                {% if guild.rules_section %}
+                <div class="mb-5">
+                    <h3 class="section-title">Rules</h3>
+                    <div class="bg-light p-4 rounded">
+                        {{ guild.rules_section|safe }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Recent Activity -->
+                {% if guild.show_recent_bets and recent_activity %}
+                <div class="mb-5">
+                    <h3 class="section-title">Recent Activity</h3>
+                    {% for bet in recent_activity %}
+                    <div class="recent-bet {{ bet.result }}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ bet.description or 'Bet' }}</strong>
+                                {% if bet.result == 'won' %}
+                                <span class="badge bg-success ms-2">Won</span>
+                                {% elif bet.result == 'lost' %}
+                                <span class="badge bg-danger ms-2">Lost</span>
+                                {% else %}
+                                <span class="badge bg-warning ms-2">Pending</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold">
+                                    {% if bet.profit_loss >= 0 %}+{% endif %}{{ bet.profit_loss }} units
+                                </div>
+                                <small class="text-muted">{{ bet.bet_date.strftime('%b %d') if bet.bet_date else '' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Leaderboard -->
+                {% if guild.show_leaderboard and leaderboard %}
+                <div class="mb-5">
+                    <h3 class="section-title">Leaderboard</h3>
+                    {% for player in leaderboard[:10] %}
+                    <div class="leaderboard-item">
+                        <div class="d-flex align-items-center">
+                            <div class="rank-badge {% if loop.index == 1 %}gold{% elif loop.index == 2 %}silver{% elif loop.index == 3 %}bronze{% endif %} me-3">
+                                {{ loop.index }}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">Player {{ player.user_id[-4:] if player.user_id else 'Unknown' }}</div>
+                                <small class="text-muted">
+                                    {{ player.wins or 0 }}W / {{ player.losses or 0 }}L
+                                    {% if player.win_rate %}({{ player.win_rate }}%){% endif %}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold text-success">
+                                    {% if player.net_profit >= 0 %}+{% endif %}{{ player.net_profit or 0 }}
+                                </div>
+                                <small class="text-muted">units</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Join Section -->
+                <div class="text-center p-4 bg-light rounded">
+                    <h4>Join Our Community</h4>
+                    <p class="text-muted mb-3">Ready to start tracking your bets and competing with others?</p>
+                    {% if guild.discord_invite %}
+                    <a href="{{ guild.discord_invite }}" class="btn btn-primary btn-lg">
+                        <i class="fab fa-discord me-2"></i>Join Discord
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

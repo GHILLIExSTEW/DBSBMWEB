@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bet Tracking AI - Discord Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/static/images/discord_logo.webp') no-repeat center center;
+            background-size: contain;
+            opacity: 0.05;
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            border: none;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        .pricing-card {
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+            z-index: 1;
+        }
+        .pricing-content {
+            position: relative;
+            z-index: 2;
+        }
+        .pricing-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15);
+            transform: translateY(-5px);
+        }
+        .pricing-card.featured {
+            border-color: #667eea;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        }
+        .discord-blue {
+            background: linear-gradient(45deg, #5865F2, #4752C4);
+            border: none;
+        }
+        .discord-blue:hover {
+            background: linear-gradient(45deg, #4752C4, #3c47a3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.3);
+        }
+        .betting-showcase {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        .betting-image {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .betting-image:hover {
+            transform: scale(1.05);
+        }
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+        .floating-circle:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        .floating-circle:nth-child(2) {
+            width: 40px;
+            height: 40px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        .floating-circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .btn {
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .alert-modern {
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(45deg, rgba(88, 101, 242, 0.1), rgba(118, 75, 162, 0.1));
+            border-left: 4px solid #5865F2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="floating-elements">
+            <div class="floating-circle"></div>
+            <div class="floating-circle"></div>
+            <div class="floating-circle"></div>
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1 class="display-4 fw-bold mb-4">
+                        <img src="/static/images/discord_logo.webp" alt="Discord" style="width: 60px; height: auto; margin-right: 15px;">
+                        Bet Tracking AI
+                    </h1>
+                    <p class="lead mb-4">
+                        The ultimate Discord bot for tracking sports bets, analyzing performance, and managing your betting community with AI-powered insights.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        {% if discord_user %}
+                            <div class="alert alert-modern">
+                                <img src="/static/images/discord_logo.webp" alt="Discord" style="width: 24px; height: auto; margin-right: 10px;">
+                                Welcome, {{ discord_user.username }}! 
+                                <a href="/auth/logout" class="btn btn-sm btn-outline-secondary ms-2">Logout</a>
+                            </div>
+                        {% else %}
+                            <a href="/auth/discord" class="btn btn-primary btn-lg">
+                                <img src="/static/images/discord_logo.webp" alt="Discord" style="width: 24px; height: auto; margin-right: 8px;">
+                                Login with Discord
+                            </a>
+                        {% endif %}
+                        <a href="#features" class="btn btn-light btn-lg">
+                            <i class="fas fa-rocket"></i> Learn More
+                        </a>
+                        <a href="#invite" class="btn btn-outline-light btn-lg">
+                            <i class="fab fa-discord"></i> Add to Discord
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <img src="/static/images/winning_bet.webp" alt="Winning Bet" class="img-fluid betting-image">
+                        </div>
+                        <div class="col-6">
+                            <img src="/static/images/losing_bet.webp" alt="Analytics Dashboard" class="img-fluid betting-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold">Why Choose Bet Tracking AI?</h2>
+                    <p class="lead text-muted">Transform your Discord server into a professional betting analysis hub</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-bar text-white" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Advanced Analytics</h5>
+                            <p class="card-text">Track win rates, ROI, and betting patterns with detailed statistical analysis and AI insights.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-users text-white" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Community Management</h5>
+                            <p class="card-text">Manage multiple bettors, create leaderboards, and foster healthy competition in your Discord server.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-robot text-white" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">AI Insights</h5>
+                            <p class="card-text">Get AI-powered recommendations and trend analysis for better betting decisions and strategy.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-clock text-white" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Live Scores</h5>
+                            <p class="card-text">Real-time score updates and game tracking across major sports leagues and competitions.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-mobile-alt text-white" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Easy Commands</h5>
+                            <p class="card-text">Simple slash commands for bet tracking, stats viewing, and management. No complex setup required.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt text-white" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Secure & Private</h5>
+                            <p class="card-text">Your data is encrypted and secure. Full privacy controls for your community and betting history.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Betting Showcase Section -->
+    <section class="betting-showcase py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold">Track Every Bet, Celebrate Every Win</h2>
+                    <p class="lead text-muted">From tracking losses to celebrating victories, our platform captures every moment of your betting journey</p>
+                </div>
+            </div>
+            
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <img src="/static/images/winning_bet.webp" alt="Winning Bet Celebration" class="img-fluid betting-image w-100">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h3 class="fw-bold mb-4">🏆 Winning Made Better</h3>
+                    <p class="text-muted mb-4">Every winning bet is automatically tracked and celebrated in your Discord community. Watch as your wins build momentum and inspire others in your server.</p>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-white rounded shadow-sm">
+                                <h4 class="text-success fw-bold mb-1">68%</h4>
+                                <small class="text-muted">Average Win Rate</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-white rounded shadow-sm">
+                                <h4 class="text-primary fw-bold mb-1">+247</h4>
+                                <small class="text-muted">Units Profit</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <img src="/static/images/losing_bet.webp" alt="Learning from Losses" class="img-fluid betting-image" style="max-height: 200px; width: auto;">
+                    <p class="text-muted mt-3 small">Learn from every loss with detailed analytics and AI-powered insights to improve your strategy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold">Choose Your Plan</h2>
+                    <p class="lead text-muted">Start free and scale as your community grows</p>
+                </div>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-4">
+                    <div class="card pricing-card h-100">
+                        <div class="card-body text-center p-4 pricing-content">
+                            <h5 class="card-title fw-bold">Starter</h5>
+                            <h2 class="fw-bold text-primary">Free</h2>
+                            <p class="text-muted">Perfect for small communities</p>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 1 authorized user</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Basic bet tracking</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Simple analytics</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Community support</li>
+                            </ul>
+                            <a href="#invite" class="btn btn-outline-primary w-100">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card pricing-card featured h-100">
+                        <div class="card-header bg-primary text-white text-center">
+                            <span class="badge bg-light text-primary">Most Popular</span>
+                        </div>
+                        <div class="card-body text-center p-4 pricing-content">
+                            <h5 class="card-title fw-bold">Premium</h5>
+                            <h2 class="fw-bold text-primary">$49.99<small class="text-muted">/month</small></h2>
+                            <p class="text-muted">For serious betting communities</p>
+                            <div class="mb-3">
+                                <span class="badge bg-success">2-Week Free Trial</span>
+                            </div>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 5 authorized users</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Advanced analytics</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> AI insights</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Custom reports</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-primary w-100">Start Free Trial</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card pricing-card h-100">
+                        <div class="card-body text-center p-4 pricing-content">
+                            <h5 class="card-title fw-bold">Platinum</h5>
+                            <h2 class="fw-bold text-primary">$99.99<small class="text-muted">/month</small></h2>
+                            <p class="text-muted">For large organizations</p>
+                            <div class="mb-3">
+                                <span class="badge bg-success">2-Week Free Trial</span>
+                            </div>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 10 authorized users</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Everything in Premium</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Custom integrations</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Dedicated support</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Custom features</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> SLA guarantee</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> White-label options</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-outline-primary w-100">Start Free Trial</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Invite Section -->
+    <section id="invite" class="py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-4">Ready to Get Started?</h2>
+                    <p class="lead mb-4">Add Bet Tracking AI to your Discord server in just one click</p>
+                    
+                    <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                        <a href="https://discord.com/oauth2/authorize?client_id=1341993312915034153&permissions=1717432801029233&response_type=code&redirect_uri=https%3A%2F%2Fbet-tracking-ai.com%2Fcgi-bin%2Fflask_cgi.py%2Fauth%2Fdiscord%2Fcallback&integration_type=0&scope=bot+applications.commands+identify+guilds+voice" 
+                           class="btn discord-blue btn-lg">
+                            <img src="/static/images/discord_logo.webp" alt="Discord" style="width: 24px; height: auto; margin-right: 8px;">
+                            Add to Discord
+                        </a>
+                        <a href="#contact" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-envelope"></i> Contact Support
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            {% if discord_user %}
+                                Already logged in as {{ discord_user.username }}. 
+                                {% if discord_user.accessible_guilds %}
+                                    <a href="/dashboard">View Your Dashboard</a>
+                                {% else %}
+                                    Add the bot to your server to get started!
+                                {% endif %}
+                            {% else %}
+                                Already have the bot? <a href="/auth/discord">Login with Discord</a>
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="mb-4">Need Help?</h2>
+                    <p class="lead mb-4">Our team is here to help you get the most out of Bet Tracking AI</p>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <i class="fas fa-envelope mb-3" style="font-size: 2rem;"></i>
+                            <h5>Email Support</h5>
+                            <p class="text-muted">support@bettrackai.com</p>
+                        </div>
+                        <div class="col-md-4">
+                            <img src="/static/images/discord_logo.webp" alt="Discord" style="width: 32px; height: auto;" class="mb-3">
+                            <h5>Discord Server</h5>
+                            <p class="text-muted">Join our support community</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-book mb-3" style="font-size: 2rem;"></i>
+                            <h5>Documentation</h5>
+                            <p class="text-muted">Detailed guides and tutorials</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
