@@ -3,51 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Bet Bot Manager</title>
+    <title>Dashboard - BetGenius AI</title>
     <link rel="icon" type="image/webp" href="/static/favicon.webp">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-radius: 12px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-        .nav-link {
-            color: #ffb300;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 179, 0, 0.1);
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-        .nav-link:hover {
-            background: rgba(255, 179, 0, 0.2);
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/sportsbook-theme.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="main-bg"></div>
+    <div class="page-bg" style="background-image: url('/static/images/winning_bet.webp');"></div>
+    
+    <!-- Fixed Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> BetGenius AI
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard" class="nav-link active">Dashboard</a></li>
+                <li><a href="/server-list" class="nav-link">Servers</a></li>
+                <li><a href="#" class="nav-link">Analytics</a></li>
+                <li><a href="/auth/logout" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding-top: 100px; max-width: 1400px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem;">
+        <!-- Welcome Section -->
+        <section class="glass-card fade-in" style="margin-bottom: 2rem; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">
+                <i class="fas fa-tachometer-alt" style="color: #ffd700;"></i>
+                Welcome back, <span style="color: #ffd700;">{{ user.display_name if user else 'Champion' }}</span>
+            </h1>
+            <p style="font-size: 1.2rem; color: #cccccc;">
+                Your betting analytics command center
+            </p>
+        </section>
+
+        <!-- Quick Stats Overview -->
+        <section class="stats-grid fade-in">
+            <div class="stat-card">
+                <div class="stat-value">
+                    <i class="fas fa-server"></i> {{ guild_count if guild_count else '0' }}
+                </div>
+                <div class="stat-label">Active Servers</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value">
+                    <i class="fas fa-chart-line"></i> {{ total_bets if total_bets else '0' }}
+                </div>
+                <div class="stat-label">Total Bets Tracked</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value" style="color: #00ff88;">
+                    <i class="fas fa-trophy"></i> {{ win_rate if win_rate else '0' }}%
+                </div>
+                <div class="stat-label">Win Rate</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value" style="color: #ffd700;">
+                    <i class="fas fa-coins"></i> ${{ profit if profit else '0' }}
+                </div>
+                <div class="stat-label">Total Profit</div>
+            </div>
+        </section>
+
+        <!-- Main Dashboard Grid -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin: 2rem 0;">
+            
+            <!-- Left Column: Guilds & Analytics -->
+            <div>
+                <!-- Guild Management -->
+                <div class="glass-panel fade-in" style="margin-bottom: 2rem;">
+                    <h2 style="color: #ffd700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-users"></i> Your Discord Servers
+                    </h2>
+                    
+                    {% if guilds %}
+                        <div class="feature-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                            {% for guild in guilds %}
+                            <div class="feature-card" style="text-align: left; padding: 1.5rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    {% if guild.icon %}
+                                        <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png" 
+                                             alt="{{ guild.name }}" 
+                                             style="width: 48px; height: 48px; border-radius: 50%; border: 2px solid #ffd700;">
+                                    {% else %}
+                                        <div style="width: 48px; height: 48px; border-radius: 50%; background: #ffd700; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold;">
+                                            {{ guild.name[0] }}
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <h3 style="color: #fff; margin: 0;">{{ guild.name }}</h3>
+                                        <p style="color: #888; margin: 0; font-size: 0.9rem;">{{ guild.member_count }} members</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <a href="/guild/{{ guild.id }}" class="btn btn-primary" style="font-size: 0.85rem;">
+                                        <i class="fas fa-chart-area"></i> Analytics
+                                    </a>
+                                    <a href="/guild/{{ guild.id }}/settings" class="btn btn-secondary" style="font-size: 0.85rem;">
+                                        <i class="fas fa-cog"></i> Settings
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div style="text-align: center; padding: 2rem; background: rgba(255, 68, 68, 0.1); border: 1px solid rgba(255, 68, 68, 0.2); border-radius: 12px;">
+                            <i class="fas fa-robot" style="font-size: 3rem; color: #ff4444; margin-bottom: 1rem;"></i>
+                            <h3 style="color: #ff4444; margin-bottom: 0.5rem;">No Servers Found</h3>
+                            <p style="color: #cccccc; margin-bottom: 1.5rem;">Add the BetGenius bot to your Discord server to get started.</p>
+                            <a href="https://discord.com/oauth2/authorize?client_id=1341993312915034153&permissions=1717432801029233&response_type=code&redirect_uri=https%3A%2F%2Fbet-tracking-ai.com%2Fcgi-bin%2Fwebapp.py%2Fauth%2Fdiscord%2Fcallback&integration_type=0&scope=bot+applications.commands+identify+guilds+voice" 
+                               class="btn btn-primary" target="_blank">
+                                <i class="fab fa-discord"></i> Add Bot to Server
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="glass-panel fade-in">
+                    <h2 style="color: #ffd700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-clock"></i> Recent Activity
+                    </h2>
+                    
+                    <div class="data-table">
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-calendar"></i> Time</th>
+                                    <th><i class="fas fa-gamepad"></i> Event</th>
+                                    <th><i class="fas fa-server"></i> Server</th>
+                                    <th><i class="fas fa-chart-line"></i> Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if recent_activity %}
+                                    {% for activity in recent_activity %}
+                                    <tr>
+                                        <td>{{ activity.timestamp }}</td>
+                                        <td>{{ activity.event }}</td>
+                                        <td>{{ activity.server }}</td>
+                                        <td>
+                                            {% if activity.result == 'win' %}
+                                                <span style="color: #00ff88;"><i class="fas fa-arrow-up"></i> Win</span>
+                                            {% elif activity.result == 'loss' %}
+                                                <span style="color: #ff4444;"><i class="fas fa-arrow-down"></i> Loss</span>
+                                            {% else %}
+                                                <span style="color: #ffd700;"><i class="fas fa-clock"></i> Pending</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: #888; padding: 2rem;">
+                                            <i class="fas fa-inbox"></i> No recent activity
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Quick Actions & Insights -->
+            <div>
+                <!-- Quick Actions -->
+                <div class="glass-panel fade-in" style="margin-bottom: 2rem;">
+                    <h3 style="color: #ffd700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-rocket"></i> Quick Actions
+                    </h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <a href="/server-list" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-search"></i> Browse Servers
+                        </a>
+                        <a href="#" class="btn btn-secondary" style="width: 100%;">
+                            <i class="fas fa-plus"></i> Create New Bet
+                        </a>
+                        <a href="#" class="btn btn-secondary" style="width: 100%;">
+                            <i class="fas fa-chart-bar"></i> View Analytics
+                        </a>
+                        <a href="/subscribe" class="btn btn-success" style="width: 100%;">
+                            <i class="fas fa-crown"></i> Upgrade to Premium
+                        </a>
+                    </div>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="glass-panel fade-in">
+                    <h3 style="color: #ffd700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-brain"></i> AI Insights
+                    </h3>
+                    
+                    <div style="space-y: 1rem;">
+                        <div style="padding: 1rem; background: rgba(0, 255, 136, 0.1); border-left: 4px solid #00ff88; border-radius: 8px; margin-bottom: 1rem;">
+                            <p style="color: #00ff88; font-weight: 600; margin-bottom: 0.5rem;">
+                                <i class="fas fa-thumbs-up"></i> Hot Tip
+                            </p>
+                            <p style="font-size: 0.9rem;">Your win rate increased 12% this week. Keep following the AI recommendations!</p>
+                        </div>
+                        
+                        <div style="padding: 1rem; background: rgba(255, 215, 0, 0.1); border-left: 4px solid #ffd700; border-radius: 8px; margin-bottom: 1rem;">
+                            <p style="color: #ffd700; font-weight: 600; margin-bottom: 0.5rem;">
+                                <i class="fas fa-lightbulb"></i> Strategy
+                            </p>
+                            <p style="font-size: 0.9rem;">Consider diversifying your portfolio across more leagues for better risk management.</p>
+                        </div>
+                        
+                        <div style="padding: 1rem; background: rgba(255, 68, 68, 0.1); border-left: 4px solid #ff4444; border-radius: 8px;">
+                            <p style="color: #ff4444; font-weight: 600; margin-bottom: 0.5rem;">
+                                <i class="fas fa-exclamation-triangle"></i> Warning
+                            </p>
+                            <p style="font-size: 0.9rem;">Heavy betting activity detected. Remember to stick to your bankroll management plan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript for animations -->
+    <script>
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add visible class immediately for above-fold content
+        setTimeout(() => {
+            document.querySelectorAll('.fade-in').forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, index * 100);
+            });
+        }, 200);
+    </script>
+</body>
+</html>
             transform: translateY(-2px);
         }
         .dashboard-grid {

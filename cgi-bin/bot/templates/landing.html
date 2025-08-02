@@ -1,53 +1,176 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bet Bot Manager - Live Scores & Guild Stats</title>
+    <title>BetGenius AI - Premium Sports Analytics Platform</title>
     <link rel="icon" type="image/webp" href="/static/favicon.webp">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-        }
-        .hero-section {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .hero-title {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ffb300;
-            margin-bottom: 1rem;
-        }
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/sportsbook-theme.css" rel="stylesheet">
+</head>
+<body class="page-landing">
+    <!-- Dynamic Background -->
+    <div class="main-bg"></div>
+    <div class="page-bg" style="background-image: url('/static/images/lobby.webp');"></div>
+    
+    <!-- Fixed Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> BetGenius AI
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="/server-list" class="nav-link">Servers</a></li>
+                {% if user %}
+                    <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                    <li><a href="/auth/logout" class="nav-link">Logout</a></li>
+                {% else %}
+                    <li><a href="/auth/discord" class="btn btn-primary">
+                        <i class="fab fa-discord"></i> Login with Discord
+                    </a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <h1 class="hero-title">
+                <i class="fas fa-trophy"></i><br>
+                BetGenius AI
+            </h1>
+            <p class="hero-subtitle">
+                The most advanced sports betting analytics platform.<br>
+                <strong>Track, Analyze, Dominate.</strong>
+            </p>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                {% if user %}
+                    <a href="/dashboard" class="btn btn-primary btn-lg pulse-gold">
+                        <i class="fas fa-chart-area"></i> Enter Dashboard
+                    </a>
+                    <a href="/server-list" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-users"></i> Browse Servers
+                    </a>
+                {% else %}
+                    <a href="/auth/discord" class="btn btn-primary btn-lg pulse-gold">
+                        <i class="fab fa-discord"></i> Start with Discord
+                    </a>
+                    <a href="#features" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-rocket"></i> Explore Features
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" style="padding: 5rem 2rem; max-width: 1400px; margin: 0 auto;">
+        <div class="hero-content fade-in">
+            <h2 style="font-size: 3rem; text-align: center; margin-bottom: 3rem; background: linear-gradient(135deg, #ffd700, #ffaa00); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                <i class="fas fa-star"></i> Premium Features
+            </h2>
+        </div>
+        
+        <div class="feature-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 style="color: #ffd700; margin-bottom: 1rem; font-size: 1.5rem;">Live Analytics</h3>
+                <p>Real-time sports data, odds tracking, and predictive modeling powered by advanced AI algorithms.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 style="color: #ffd700; margin-bottom: 1rem; font-size: 1.5rem;">Guild Management</h3>
+                <p>Create and manage betting communities with advanced Discord integration and social features.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 style="color: #ffd700; margin-bottom: 1rem; font-size: 1.5rem;">AI Insights</h3>
+                <p>Machine learning models analyze patterns to provide winning recommendations and risk assessment.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 style="color: #ffd700; margin-bottom: 1rem; font-size: 1.5rem;">Secure Platform</h3>
+                <p>Enterprise-grade security with encrypted data storage and Discord OAuth authentication.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 style="color: #ffd700; margin-bottom: 1rem; font-size: 1.5rem;">Mobile Optimized</h3>
+                <p>Responsive design ensures perfect functionality across all devices and screen sizes.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h3 style="color: #ffd700; margin-bottom: 1rem; font-size: 1.5rem;">Premium Support</h3>
+                <p>24/7 customer support with dedicated account managers for enterprise clients.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="padding: 5rem 2rem; text-align: center; background: rgba(0, 0, 0, 0.3);">
+        <div class="glass-card" style="max-width: 800px; margin: 0 auto;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: #ffd700;">
+                <i class="fas fa-rocket"></i> Ready to Dominate?
+            </h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #cccccc;">
+                Join thousands of successful bettors using BetGenius AI to maximize their profits.
+            </p>
+            {% if not user %}
+                <a href="/auth/discord" class="btn btn-primary btn-lg pulse-gold">
+                    <i class="fab fa-discord"></i> Get Started Now
+                </a>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- JavaScript for animations -->
+    <script>
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add initial visible class to hero
+        setTimeout(() => {
+            document.querySelector('.hero .fade-in').classList.add('visible');
+        }, 500);
+    </script>
+</body>
+</html>
             background: linear-gradient(135deg, #ffb300, #ff8c00);
             color: #000;
             text-decoration: none;
