@@ -8,8 +8,8 @@ from urllib.parse import urlparse
 
 class RedirectHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        # Redirect all traffic to Flask server on port 25595
-        new_url = f"http://{self.headers.get('Host', '3.135.144.68').split(':')[0]}:25595{self.path}"
+        # Redirect all traffic to Flask server on port 25594 (correct port)
+        new_url = f"http://{self.headers.get('Host', '72.240.236.211').split(':')[0]}:25594{self.path}"
         
         self.send_response(301)
         self.send_header('Location', new_url)
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     try:
         with socketserver.TCPServer(("", PORT), RedirectHandler) as httpd:
             print(f"🔀 HTTP Redirect Server running on port {PORT}")
-            print(f"🌐 Redirecting all traffic to Flask server on port 25595")
+            print(f"🌐 Redirecting all traffic to Flask server on port 25594")
             httpd.serve_forever()
     except PermissionError:
         print("❌ Permission denied. Run as Administrator to bind to port 80")
