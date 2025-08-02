@@ -10,6 +10,8 @@ from mysql.connector import Error
 import json
 import requests
 from dotenv import load_dotenv
+import redis
+import hashlib
 
 # Load environment variables from .env file
 load_dotenv()
@@ -68,15 +70,68 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-change-this'
 # Handle proxy headers (useful for hosting platforms)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
+# Redis Configuration
+try:
+    redis_client = redis.Redis(
+        host=os.getenv('REDIS_HOST', 'localhost'),
+        port=int(os.getenv('REDIS_PORT', 6379)),
+        username=os.getenv('REDIS_USERNAME', None),
+        password=os.getenv('REDIS_PASSWORD', None),
+        db=int(os.getenv('REDIS_DB', 0)),
+        decode_responses=True,
+        socket_connect_timeout=5,
+        socket_timeout=5,
+        retry_on_timeout=True
+    )
+    # Test connection
+    redis_client.ping()
+    logger.info("✅ Redis connection established successfully")
+except Exception as e:
+    logger.error(f"❌ Redis connection failed: {e}")
+    redis_client = None
+
+def get_cache_key(*args):
+    """Generate a cache key from arguments."""
+    key_string = "|".join(str(arg) for arg in args)
+    return hashlib.md5(key_string.encode()).hexdigest()
+
+def cache_get(key, default=None):
+    """Get value from Redis cache."""
+    if not redis_client:
+        return default
+    try:
+        value = redis_client.get(key)
+        return json.loads(value) if value else default
+    except Exception as e:
+        logger.error(f"Cache get error: {e}")
+        return default
+
+def cache_set(key, value, expire=300):
+    """Set value in Redis cache with expiration (default 5 minutes)."""
+    if not redis_client:
+        return False
+    try:
+        redis_client.setex(key, expire, json.dumps(value))
+        return True
+    except Exception as e:
+        logger.error(f"Cache set error: {e}")
+        return False
+
 def get_db_connection():
-    """Create database connection."""
+    """Create database connection with optimized settings."""
     try:
         connection = mysql.connector.connect(
             host=os.getenv('MYSQL_HOST', 'localhost'),
             user=os.getenv('MYSQL_USER', 'dbsbm'),
             password=os.getenv('MYSQL_PASSWORD', ''),
             database=os.getenv('MYSQL_DB', 'dbsbm'),
-            port=int(os.getenv('MYSQL_PORT', 3306))
+            port=int(os.getenv('MYSQL_PORT', 3306)),
+            # Performance optimizations
+            connection_timeout=5,
+            autocommit=True,
+            pool_name='web_pool',
+            pool_size=10,
+            pool_reset_session=True
         )
         return connection
     except Error as e:
@@ -85,6 +140,12 @@ def get_db_connection():
 
 def get_active_guilds():
     """Get active guilds with their stats."""
+    # Check cache first
+    cache_key = get_cache_key("active_guilds")
+    cached_result = cache_get(cache_key)
+    if cached_result is not None:
+        return cached_result
+    
     connection = get_db_connection()
     if not connection:
         return []
@@ -119,6 +180,9 @@ def get_active_guilds():
         cursor.execute(query)
         guilds = cursor.fetchall()
         cursor.close()
+        
+        # Cache for 2 minutes
+        cache_set(cache_key, guilds, expire=120)
         return guilds
         
     except Error as e:
@@ -346,6 +410,12 @@ def get_guild_leaderboard(guild_id, limit=10):
 
 def get_live_games():
     """Get live games from database."""
+    # Check cache first (cache for 30 seconds since live data changes frequently)
+    cache_key = get_cache_key("live_games")
+    cached_result = cache_get(cache_key)
+    if cached_result is not None:
+        return cached_result
+    
     connection = get_db_connection()
     if not connection:
         return []
@@ -422,7 +492,11 @@ def get_live_games():
             leagues[league_id]['games'].append(game_data)
         
         cursor.close()
-        return list(leagues.values())
+        result = list(leagues.values())
+        
+        # Cache for 30 seconds (live data)
+        cache_set(cache_key, result, expire=30)
+        return result
         
     except Error as e:
         logger.error(f"Error fetching live games: {e}")
@@ -433,6 +507,12 @@ def get_live_games():
 
 def get_guild_stats(guild_id):
     """Get guild statistics for today."""
+    # Check cache first (cache for 60 seconds)
+    cache_key = get_cache_key("guild_stats", guild_id)
+    cached_result = cache_get(cache_key)
+    if cached_result is not None:
+        return cached_result
+    
     try:
         connection = get_db_connection()
         if not connection:
@@ -503,12 +583,16 @@ def get_guild_stats(guild_id):
         cursor.close()
         connection.close()
         
-        return {
+        result = {
             'today_bets': today_bets,
             'today_units': today_units,
             'active_users': active_users,
             'win_rate': win_rate
         }
+        
+        # Cache for 60 seconds
+        cache_set(cache_key, result, expire=60)
+        return result
         
     except Exception as e:
         logger.error(f"Error getting guild stats: {e}")
