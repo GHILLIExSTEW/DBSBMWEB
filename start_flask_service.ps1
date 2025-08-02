@@ -89,7 +89,7 @@ try {
     $Process.BeginErrorReadLine()
     
     Write-Log "✅ Flask service started with PID: $($Process.Id)"
-    Write-Log "🌐 Flask app should be accessible at: http://YOUR_LIGHTSAIL_IP:5000"
+    Write-Log "🌐 Flask app should be accessible at: http://bet-tracker-pro.com:5000"
     Write-Log "📝 Logs are being written to: $LogFile"
     
     # Don't wait for the process to exit (let it run in background)

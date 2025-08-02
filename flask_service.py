@@ -51,11 +51,12 @@ def start_flask_app():
         from webapp import app
         
         logging.info("🚀 Starting Flask server as Windows service...")
-        logging.info("🌐 Server will be accessible at: http://YOUR_LIGHTSAIL_IP:5000")
+        logging.info("🌐 Server will be accessible at: http://bet-tracker-pro.com:5000")
+        logging.info("☁️ Domain configured for Cloudflare proxy support")
         
-        # Run Flask in production mode
+        # Run Flask in production mode with Cloudflare support
         app.run(
-            host='0.0.0.0',
+            host='0.0.0.0',  # Listen on all interfaces for Cloudflare
             port=5000,
             debug=False,
             threaded=True,
