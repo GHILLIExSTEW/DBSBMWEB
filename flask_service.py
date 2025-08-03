@@ -51,7 +51,7 @@ def start_flask_app():
         from webapp import app
         
         logging.info("🚀 Starting Flask server as Windows service...")
-        logging.info("🌐 Server will be accessible at: http://bet-tracker-pro.com:5000")
+        logging.info("🌐 Server will be accessible at: https://bettrackingbot.com")
         logging.info("☁️ Domain configured for Cloudflare proxy support")
         
         # Run Flask in production mode with Cloudflare support

@@ -7,6 +7,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from datetime import datetime
 import mysql.connector
 from mysql.connector import Error
+import psycopg2
+from psycopg2 import OperationalError
 import json
 import requests
 from dotenv import load_dotenv
@@ -120,22 +122,35 @@ def cache_set(key, value, expire=300):
 def get_db_connection():
     """Create database connection with optimized settings."""
     try:
-        connection = mysql.connector.connect(
-            host=os.getenv('MYSQL_HOST', 'localhost'),
-            user=os.getenv('MYSQL_USER', 'dbsbm'),
-            password=os.getenv('MYSQL_PASSWORD', ''),
-            database=os.getenv('MYSQL_DB', 'dbsbm'),
-            port=int(os.getenv('MYSQL_PORT', 3306)),
-            # Performance optimizations
-            connection_timeout=5,
-            autocommit=True,
-            pool_name='web_pool',
-            pool_size=10,
-            pool_reset_session=True
-        )
-        return connection
-    except Error as e:
-        logger.error(f"Error connecting to MySQL: {e}")
+        # Try PostgreSQL first (preferred)
+        if os.getenv('POSTGRES_HOST'):
+            connection = psycopg2.connect(
+                host=os.getenv('POSTGRES_HOST', 'localhost'),
+                user=os.getenv('POSTGRES_USER', 'postgres'),
+                password=os.getenv('POSTGRES_PASSWORD', ''),
+                database=os.getenv('POSTGRES_DB', 'dbsbm'),
+                port=int(os.getenv('POSTGRES_PORT', 5432))
+            )
+            connection.autocommit = True
+            return connection
+        else:
+            # Fallback to MySQL
+            connection = mysql.connector.connect(
+                host=os.getenv('MYSQL_HOST', 'localhost'),
+                user=os.getenv('MYSQL_USER', 'dbsbm'),
+                password=os.getenv('MYSQL_PASSWORD', ''),
+                database=os.getenv('MYSQL_DB', 'dbsbm'),
+                port=int(os.getenv('MYSQL_PORT', 3306)),
+                # Performance optimizations
+                connection_timeout=5,
+                autocommit=True,
+                pool_name='web_pool',
+                pool_size=10,
+                pool_reset_session=True
+            )
+            return connection
+    except (OperationalError, Error) as e:
+        logger.error(f"Error connecting to database: {e}")
         return None
 
 def get_active_guilds():
