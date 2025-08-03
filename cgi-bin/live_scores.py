@@ -9,32 +9,34 @@ path = os.environ.get('PATH_INFO', '/')
 
 # Database connection function
 def get_db_connection():
-    import mysql.connector
+    import asyncpg
     try:
-        connection = mysql.connector.connect(
-            host='na05-sql.pebblehost.com',
-            user='customer_990306_Server_database',
-            password='NGNrWmR@IypQb4k@tzgk+NnI',
-            database='customer_990306_Server_database',
-            port=3306)
+        connection = await asyncpg.connect(
+            user=os.getenv('PG_USER', 'your_username'),
+            password=os.getenv('PG_PASSWORD', 'your_password'),
+            database=os.getenv('PG_DATABASE', 'your_database_name'),
+            host=os.getenv('PG_HOST', 'localhost'),
+            port=int(os.getenv('PG_PORT', '5432'))
+        )
         return connection
     except Exception as e:
         return None
 
 def get_live_games():
-    connection = get_db_connection()
-    if not connection:
-        return []
-    
-    try:
-        cursor = connection.cursor()
-        cursor.execute("SELECT id, home_team_name, away_team_name, status, start_time FROM games WHERE status IN ('LIVE', 'HT', '1H', '2H') ORDER BY start_time DESC LIMIT 10")
-        games = cursor.fetchall()
-        cursor.close()
-        connection.close()
-        return games
-    except Exception as e:
-        return []
+    import asyncio
+    async def fetch_games():
+        connection = await get_db_connection()
+        if not connection:
+            return []
+        try:
+            rows = await connection.fetch(
+                "SELECT id, home_team_name, away_team_name, status, start_time FROM games WHERE status IN ('LIVE', 'HT', '1H', '2H') ORDER BY start_time DESC LIMIT 10"
+            )
+            await connection.close()
+            return [tuple(row.values()) for row in rows]
+        except Exception as e:
+            return []
+    return asyncio.run(fetch_games())
 
 if path == '/live-scores':
     games = get_live_games()
