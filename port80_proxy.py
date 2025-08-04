@@ -18,8 +18,8 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
     
     def proxy_request(self):
         try:
-            # Forward request to Flask server on port 25594
-            flask_url = f"http://localhost:25594{self.path}"
+            # Forward request to Flask server on port 5000
+            flask_url = f"http://localhost:5000{self.path}"
             
             # Create request
             req = urllib.request.Request(flask_url)
@@ -70,15 +70,15 @@ if __name__ == "__main__":
     # Check if Flask is running
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = sock.connect_ex(('localhost', 25594))
+        result = sock.connect_ex(('localhost', 5000))
         sock.close()
         
         if result != 0:
-            print("❌ Flask server is not running on port 25594!")
+            print("❌ Flask server is not running on port 5000!")
             print("💡 Start your Flask app first, then run this proxy")
             exit(1)
         else:
-            print("✅ Flask server detected on port 25594")
+            print("✅ Flask server detected on port 5000")
     
     except Exception as e:
         print(f"❌ Cannot check Flask server: {e}")
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     try:
         with socketserver.TCPServer(("", PORT), ProxyHandler) as httpd:
             print(f"🔗 HTTP Proxy Server running on port {PORT}")
-            print(f"🌐 Proxying all traffic to Flask server on port 25594")
+            print(f"🌐 Proxying all traffic to Flask server on port 5000")
             print(f"🌍 Access your site at: http://3.135.144.68/")
             httpd.serve_forever()
     except PermissionError:

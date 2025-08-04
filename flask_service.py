@@ -31,10 +31,10 @@ def setup_environment():
     env_file = app_dir / '.env'
     
     if env_file.exists():
-        logging.info(f"✅ Using environment file: {env_file}")
+        logging.info(f"[OK] Using environment file: {env_file}")
         return True
     else:
-        logging.error("❌ .env file not found in cgi-bin directory!")
+        logging.error("[ERROR] .env file not found in cgi-bin directory!")
         return False
 
 def start_flask_app():
@@ -50,9 +50,9 @@ def start_flask_app():
         # Import and configure the Flask app
         from webapp import app
         
-        logging.info("🚀 Starting Flask server as Windows service...")
-        logging.info("🌐 Server will be accessible at: https://bettrackingbot.com")
-        logging.info("☁️ Domain configured for Cloudflare proxy support")
+        logging.info("Starting Flask server as Windows service...")
+        logging.info("Server will be accessible at: https://bettrackingbot.com")
+        logging.info("Domain configured for Cloudflare proxy support")
         
         # Run Flask in production mode with Cloudflare support
         app.run(
@@ -64,7 +64,7 @@ def start_flask_app():
         )
         
     except Exception as e:
-        logging.error(f"❌ Flask server error: {e}")
+        logging.error(f"[ERROR] Flask server error: {e}")
         raise
 
 def main_service_loop():
@@ -74,7 +74,7 @@ def main_service_loop():
     
     while restart_count < max_restarts:
         try:
-            logging.info(f"🔄 Starting Flask service (attempt {restart_count + 1})")
+            logging.info(f"Starting Flask service (attempt {restart_count + 1})")
             
             # Setup environment
             if not setup_environment():
@@ -85,7 +85,7 @@ def main_service_loop():
             start_flask_app()
             
         except KeyboardInterrupt:
-            logging.info("🛑 Service stopped by user (Ctrl+C)")
+            logging.info("Service stopped by user (Ctrl+C)")
             break
         except Exception as e:
             restart_count += 1
@@ -111,9 +111,9 @@ if __name__ == '__main__':
             start_flask_app()
         elif sys.argv[1] == 'service':
             # Service mode - run with auto-restart
-            logging.info("🔧 Running in service mode...")
+            logging.info("Running in service mode...")
             main_service_loop()
     else:
         # Default mode
-        logging.info("🚀 Running Flask service...")
+        logging.info("Running Flask service...")
         main_service_loop()

@@ -9,7 +9,7 @@ from datetime import datetime
 cgitb.enable()
 
 # Create Flask app
-app = Flask(__name__, static_folder="bot/static", template_folder="bot/templates")
+app = Flask(__name__, static_folder="../../../StaticFiles/DBSBMWEB/static", template_folder="bot/templates")
 
 # Configure for production
 app.config['ENV'] = 'production'

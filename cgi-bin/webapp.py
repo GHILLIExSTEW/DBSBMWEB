@@ -62,7 +62,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Create Flask app
-app = Flask(__name__, static_folder="bot/static", template_folder="bot/templates")
+app = Flask(__name__, static_folder="../../../StaticFiles/DBSBM/static", template_folder="bot/templates")
 
 # Configure for production
 app.config['ENV'] = os.getenv('FLASK_ENV', 'production')
@@ -87,9 +87,9 @@ try:
     )
     # Test connection
     redis_client.ping()
-    logger.info("✅ Redis connection established successfully")
+    logger.info("[OK] Redis connection established successfully")
 except Exception as e:
-    logger.error(f"❌ Redis connection failed: {e}")
+    logger.error(f"[ERROR] Redis connection failed: {e}")
     redis_client = None
 
 def get_cache_key(*args):

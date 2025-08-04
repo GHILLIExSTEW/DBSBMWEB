@@ -85,7 +85,7 @@ print("""
 
 # Check for important files
 current_dir = os.path.dirname(os.path.abspath(__file__))
-files_to_check = ['webapp.py', '.env', 'bot/templates', 'bot/static']
+files_to_check = ['webapp.py', '.env', 'bot/templates', '../../../StaticFiles/DBSBMWEB/static']
 
 for filename in files_to_check:
     filepath = os.path.join(current_dir, filename)
