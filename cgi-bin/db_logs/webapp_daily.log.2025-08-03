@@ -1,0 +1,101 @@
+2025-08-03 00:07:47,265 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.26.8.45:5000
+2025-08-03 00:07:47,265 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-03 00:08:07,749 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:08:07] "GET /?id=ce1bd906-7f07-4e53-88e4-82f28474100c&vscodeBrowserReqId=1754179686946 HTTP/1.1" 200 -
+2025-08-03 00:08:08,081 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:08:08] "GET /static/images/discord_logo.webp HTTP/1.1" 200 -
+2025-08-03 00:08:08,183 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:08:08] "GET /static/images/losing_bet.webp HTTP/1.1" 200 -
+2025-08-03 00:08:08,219 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:08:08] "GET /static/images/winning_bet.webp HTTP/1.1" 200 -
+2025-08-03 00:08:30,772 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:08:30] "GET /?id=ce1bd906-7f07-4e53-88e4-82f28474100c&vscodeBrowserReqId=1754179710235 HTTP/1.0" 200 -
+2025-08-03 00:08:30,850 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:08:30] "GET /static/images/discord_logo.webp HTTP/1.0" 200 -
+2025-08-03 00:08:30,862 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:08:30] "GET /static/images/losing_bet.webp HTTP/1.0" 200 -
+2025-08-03 00:08:30,871 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:08:30] "GET /static/images/winning_bet.webp HTTP/1.0" 200 -
+2025-08-03 00:10:34,102 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:10:34] "GET / HTTP/1.1" 200 -
+2025-08-03 00:10:43,361 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:10:43] "GET / HTTP/1.0" 200 -
+2025-08-03 00:22:21,229 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:21] "GET / HTTP/1.0" 200 -
+2025-08-03 00:22:43,150 [ERROR] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:43] code 400, message Bad request version ('\x02h2\x08http/1.1\x00#\x00\x00\x00+\x00\x07\x06\x1a\x1a\x03\x04\x03\x03\x00')
+2025-08-03 00:22:43,150 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:43] "[31m[1m\x16\x03\x01\x06²\x01\x00\x06®\x03\x03¦ë©G~\x97C\x86ÐÈO7ò3\x99\x05¨î½p(zu÷$¢1´Ç\x04\x83\x84 aø\x92*ÚytÀØ®m×(\x92`\x1f¤*\x8a·\x1aPe}¹½>º[¿q\x88\x00 úú\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06EZZ\x00\x00Di\x00\x05\x00\x03\x02h2\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00\x1b\x00\x03\x02\x00\x02\x00\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1\x00#\x00\x00\x00+\x00\x07\x06\x1a\x1a\x03\x04\x03\x03\x00[0m" 400 -
+2025-08-03 00:22:43,400 [ERROR] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:43] code 400, message Bad request version ('localhost\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00')
+2025-08-03 00:22:43,400 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:43] "[31m[1m\x16\x03\x01\x06ò\x01\x00\x06î\x03\x03ë\x19C\x81Å'PxmØA§öM\x08w\x08«ê1QhÆãÁ¬¯°~tA° Ng\x98\x14ÓQë5\x0e\x10K¹ÿ8\x81\x07µ%l[~ùàÐÕ9v\x0b:\x09>ê\x00 **\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x85\x8a\x8a\x00\x00\x00\x17\x00\x00\x00#\x00\x00\x00\x00\x00\x0e\x00\x0c\x00\x00\x09localhost\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00[0m" 400 -
+2025-08-03 00:22:43,540 [ERROR] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:43] code 400, message Bad request version ('q\x04aEõ\x1a;\x91(7OÈ\x90')
+2025-08-03 00:22:43,540 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:43] "[31m[1m\x16\x03\x01\x06Ò\x01\x00\x06Î\x03\x03Téi\x81¸\x07Ï´Iô\x9aD\x8cC\x8cÓK\x06\x01\x9aãÁ\x97/ò©·nÄ\x86\x0b¶ q\x04aEõ\x1a;\x91(7OÈ\x90[0m" 400 -
+2025-08-03 00:22:43,832 [ERROR] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:43] code 400, message Bad request version ('\x02h2\x08http/1.1\x00')
+2025-08-03 00:22:43,833 [INFO] werkzeug: 127.0.0.1 - - [03/Aug/2025 00:22:43] "[31m[1m\x16\x03\x01\x06ò\x01\x00\x06î\x03\x03ÞN¦ëO?\x99û\x1d~Áäû.Ñ#äó\x08\x88ç\x98\x84z\x8b°%°Ò\x01mæ 4æ\x86\x01òÍ½N\x8aEæ\x93w9ä17È¸Ë\x812i×Ä¤"s\x1bö\x98n\x00 \x9a\x9a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x85ªª\x00\x00\x00\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1\x00[0m" 400 -
+2025-08-03 01:00:33,709 [INFO] werkzeug: 172.71.141.127 - - [03/Aug/2025 01:00:33] "[33mHEAD /.env.prod HTTP/1.0[0m" 404 -
+2025-08-03 01:00:33,907 [INFO] werkzeug: 172.71.141.185 - - [03/Aug/2025 01:00:33] "[33mHEAD /.env.dev HTTP/1.0[0m" 404 -
+2025-08-03 01:00:34,136 [INFO] werkzeug: 162.158.217.27 - - [03/Aug/2025 01:00:34] "[33mHEAD /.env HTTP/1.0[0m" 404 -
+2025-08-03 01:00:34,338 [INFO] werkzeug: 172.71.141.142 - - [03/Aug/2025 01:00:34] "[33mHEAD /.env.local HTTP/1.0[0m" 404 -
+2025-08-03 01:00:34,533 [INFO] werkzeug: 162.158.217.126 - - [03/Aug/2025 01:00:34] "[33mHEAD /.env.prod HTTP/1.0[0m" 404 -
+2025-08-03 01:00:34,741 [INFO] werkzeug: 172.71.141.37 - - [03/Aug/2025 01:00:34] "[33mHEAD /.env.dev HTTP/1.0[0m" 404 -
+2025-08-03 01:00:45,512 [INFO] werkzeug: 34.226.183.136 - - [03/Aug/2025 01:00:45] "GET / HTTP/1.0" 200 -
+2025-08-03 01:00:51,977 [INFO] werkzeug: 34.226.183.136 - - [03/Aug/2025 01:00:51] "GET /?id=ce1bd906-7f07-4e53-88e4-82f28474100c&vscodeBrowserReqId=1754182851947 HTTP/1.0" 200 -
+2025-08-03 01:00:52,145 [INFO] werkzeug: 34.226.183.136 - - [03/Aug/2025 01:00:52] "GET /static/images/discord_logo.webp HTTP/1.0" 200 -
+2025-08-03 01:00:52,148 [INFO] werkzeug: 34.226.183.136 - - [03/Aug/2025 01:00:52] "GET /static/images/winning_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:00:52,152 [INFO] werkzeug: 34.226.183.136 - - [03/Aug/2025 01:00:52] "GET /static/images/losing_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:00:55,560 [INFO] werkzeug: 72.240.236.211 - - [03/Aug/2025 01:00:55] "GET / HTTP/1.0" 200 -
+2025-08-03 01:00:55,622 [INFO] werkzeug: 72.240.236.211 - - [03/Aug/2025 01:00:55] "GET /static/images/discord_logo.webp HTTP/1.0" 200 -
+2025-08-03 01:00:55,636 [INFO] werkzeug: 72.240.236.211 - - [03/Aug/2025 01:00:55] "GET /static/images/winning_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:00:55,659 [INFO] werkzeug: 72.240.236.211 - - [03/Aug/2025 01:00:55] "GET /static/images/losing_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:00:55,899 [INFO] werkzeug: 72.240.236.211 - - [03/Aug/2025 01:00:55] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-08-03 01:00:57,056 [INFO] werkzeug: 104.23.209.6 - - [03/Aug/2025 01:00:57] "GET /?id=ce1bd906-7f07-4e53-88e4-82f28474100c&vscodeBrowserReqId=1754182856741 HTTP/1.0" 200 -
+2025-08-03 01:00:57,365 [INFO] werkzeug: 104.23.213.113 - - [03/Aug/2025 01:00:57] "GET /static/images/losing_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:00:57,451 [INFO] werkzeug: 172.68.245.121 - - [03/Aug/2025 01:00:57] "GET /static/images/discord_logo.webp HTTP/1.0" 200 -
+2025-08-03 01:00:57,548 [INFO] werkzeug: 172.68.245.213 - - [03/Aug/2025 01:00:57] "GET /static/images/winning_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:01:08,107 [INFO] werkzeug: 172.69.6.120 - - [03/Aug/2025 01:01:08] "GET / HTTP/1.0" 200 -
+2025-08-03 01:01:08,232 [INFO] werkzeug: 172.69.17.157 - - [03/Aug/2025 01:01:08] "GET /static/images/winning_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:01:08,239 [INFO] werkzeug: 172.69.7.205 - - [03/Aug/2025 01:01:08] "GET /static/images/discord_logo.webp HTTP/1.0" 200 -
+2025-08-03 01:01:08,246 [INFO] werkzeug: 172.70.194.164 - - [03/Aug/2025 01:01:08] "GET /static/images/losing_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:01:08,453 [INFO] werkzeug: 172.69.59.109 - - [03/Aug/2025 01:01:08] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-08-03 01:01:16,830 [INFO] werkzeug: 172.69.6.120 - - [03/Aug/2025 01:01:16] "[32mGET /auth/discord HTTP/1.0[0m" 302 -
+2025-08-03 01:03:35,175 [INFO] werkzeug: 172.68.70.191 - - [03/Aug/2025 01:03:35] "GET / HTTP/1.0" 200 -
+2025-08-03 01:03:35,261 [INFO] werkzeug: 172.71.31.17 - - [03/Aug/2025 01:03:35] "GET /static/images/discord_logo.webp HTTP/1.0" 200 -
+2025-08-03 01:03:35,269 [INFO] werkzeug: 172.71.22.177 - - [03/Aug/2025 01:03:35] "GET /static/images/winning_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:03:35,438 [INFO] werkzeug: 172.68.71.162 - - [03/Aug/2025 01:03:35] "GET /static/images/losing_bet.webp HTTP/1.0" 200 -
+2025-08-03 01:03:35,786 [INFO] werkzeug: 172.68.70.196 - - [03/Aug/2025 01:03:35] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-08-03 01:03:48,721 [INFO] werkzeug: 172.71.22.177 - - [03/Aug/2025 01:03:48] "[36mGET /static/images/winning_bet.webp HTTP/1.0[0m" 304 -
+2025-08-03 01:03:48,734 [INFO] werkzeug: 108.162.237.47 - - [03/Aug/2025 01:03:48] "[33mGET /apple-touch-icon.png HTTP/1.0[0m" 404 -
+2025-08-03 01:03:48,740 [INFO] werkzeug: 108.162.237.158 - - [03/Aug/2025 01:03:48] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.0[0m" 404 -
+2025-08-03 01:04:03,554 [INFO] werkzeug: 172.69.7.98 - - [03/Aug/2025 01:04:03] "GET / HTTP/1.0" 200 -
+2025-08-03 01:05:54,507 [INFO] werkzeug: 172.69.59.249 - - [03/Aug/2025 01:05:54] "GET / HTTP/1.0" 200 -
+2025-08-03 01:06:03,564 [INFO] werkzeug: 172.69.59.249 - - [03/Aug/2025 01:06:03] "GET / HTTP/1.0" 200 -
+2025-08-03 01:06:12,532 [ERROR] webapp: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-08-03 01:06:12,640 [INFO] werkzeug: 172.69.59.249 - - [03/Aug/2025 01:06:12] "GET /server-list HTTP/1.0" 200 -
+2025-08-03 01:06:21,715 [INFO] werkzeug: 172.69.59.249 - - [03/Aug/2025 01:06:21] "GET / HTTP/1.0" 200 -
+2025-08-03 01:06:25,389 [ERROR] webapp: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-08-03 01:06:25,389 [INFO] werkzeug: 172.69.59.249 - - [03/Aug/2025 01:06:25] "GET /server-list HTTP/1.0" 200 -
+2025-08-03 01:06:29,400 [ERROR] webapp: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-08-03 01:06:33,405 [ERROR] webapp: Error connecting to MySQL: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+2025-08-03 01:06:33,648 [INFO] werkzeug: 172.69.59.249 - - [03/Aug/2025 01:06:33] "GET /dashboard HTTP/1.0" 200 -
+2025-08-03 01:06:33,940 [INFO] werkzeug: 172.71.254.238 - - [03/Aug/2025 01:06:33] "GET /static/css/sportsbook-theme.css HTTP/1.0" 200 -
+2025-08-03 01:06:34,213 [INFO] werkzeug: 172.70.130.245 - - [03/Aug/2025 01:06:34] "[33mGET /static/favicon.webp HTTP/1.0[0m" 404 -
+2025-08-03 01:09:15,441 [INFO] werkzeug: 162.158.110.73 - - [03/Aug/2025 01:09:15] "GET / HTTP/1.0" 200 -
+2025-08-03 01:09:26,332 [INFO] werkzeug: 172.71.172.15 - - [03/Aug/2025 01:09:26] "GET / HTTP/1.0" 200 -
+2025-08-03 01:10:18,527 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.26.8.45:5000
+2025-08-03 01:10:18,528 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-03 01:10:30,055 [INFO] werkzeug: 172.69.23.57 - - [03/Aug/2025 01:10:30] "GET / HTTP/1.0" 200 -
+2025-08-03 01:15:04,826 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.26.8.45:5000
+2025-08-03 01:15:04,826 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-08-03 01:15:12,504 [INFO] werkzeug: 172.69.17.178 - - [03/Aug/2025 01:15:12] "GET / HTTP/1.0" 200 -
+2025-08-03 01:15:21,872 [INFO] werkzeug: 162.158.79.7 - - [03/Aug/2025 01:15:21] "GET /?id=ce1bd906-7f07-4e53-88e4-82f28474100c&vscodeBrowserReqId=1754183721780 HTTP/1.0" 200 -
+2025-08-03 01:15:49,270 [INFO] werkzeug: 172.71.254.187 - - [03/Aug/2025 01:15:49] "[33mGET /serverlist HTTP/1.0[0m" 404 -
+2025-08-03 01:15:58,481 [ERROR] webapp: Error rendering server list: 'psycopg2.extensions.connection' object has no attribute 'is_connected'
+2025-08-03 01:15:58,486 [INFO] werkzeug: 172.69.17.199 - - [03/Aug/2025 01:15:58] "GET /server-list HTTP/1.0" 200 -
+2025-08-03 01:16:40,640 [ERROR] webapp: Error rendering server list: 'psycopg2.extensions.connection' object has no attribute 'is_connected'
+2025-08-03 01:16:40,640 [INFO] werkzeug: 172.70.35.65 - - [03/Aug/2025 01:16:40] "GET /server-list?id=ce1bd906-7f07-4e53-88e4-82f28474100c&vscodeBrowserReqId=1754183800532 HTTP/1.0" 200 -
+2025-08-03 01:16:48,681 [INFO] werkzeug: 172.70.35.65 - - [03/Aug/2025 01:16:48] "GET /subscribe?id=ce1bd906-7f07-4e53-88e4-82f28474100c&vscodeBrowserReqId=1754183808442 HTTP/1.0" 200 -
+2025-08-03 01:16:55,048 [INFO] werkzeug: 172.70.35.65 - - [03/Aug/2025 01:16:55] "[32mGET /auth/discord?id=ce1bd906-7f07-4e53-88e4-82f28474100c&vscodeBrowserReqId=1754183814678 HTTP/1.0[0m" 302 -
+2025-08-03 17:53:49,019 [INFO] __main__: Starting Flask webapp on port 5000
+2025-08-03 17:53:49,020 [INFO] __main__: Environment: production
+2025-08-03 17:53:49,020 [INFO] __main__: Debug mode: False
+2025-08-03 17:53:49,159 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.26.8.45:5000
+2025-08-03 17:53:49,160 [INFO] werkzeug: [33mPress CTRL+C to quit[0m

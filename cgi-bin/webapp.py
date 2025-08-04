@@ -62,7 +62,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Create Flask app
-app = Flask(__name__, static_folder="../../../StaticFiles/DBSBM/static", template_folder="bot/templates")
+app = Flask(__name__, static_folder="../../StaticFiles/DBSBM/static", template_folder="bot/templates")
 
 # Configure for production
 app.config['ENV'] = os.getenv('FLASK_ENV', 'production')

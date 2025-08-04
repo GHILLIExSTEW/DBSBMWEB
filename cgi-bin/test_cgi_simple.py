@@ -13,7 +13,7 @@ print("""
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CGI Test - Bet Tracking AI</title>
+    <title>CGI Test - Bet Tracking Bot</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
         .success { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; }

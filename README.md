@@ -1,4 +1,4 @@
-# 🎰 Bet Tracking AI - Discord Bot Web System
+# 🎰 Bet Tracking Bot - Discord Bot Web System
 
 A comprehensive Discord bot and web application for managing betting communities, live sports tracking, and guild customization.
 
