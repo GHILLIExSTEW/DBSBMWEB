@@ -809,6 +809,109 @@ def get_user_accessible_guilds(user_guilds):
         logger.error(f"Error getting user accessible guilds: {e}")
         return []
 
+def get_user_guild_roles(guild_id, user_id, access_token):
+    """Get user's roles in a specific Discord guild."""
+    try:
+        headers = {
+            'Authorization': f'Bearer {access_token}'
+        }
+        
+        # Get guild member info to see their roles
+        response = requests.get(f'https://discord.com/api/guilds/{guild_id}/members/{user_id}', headers=headers)
+        if response.status_code == 200:
+            member_data = response.json()
+            return member_data.get('roles', [])
+        else:
+            logger.warning(f"Could not get user roles for guild {guild_id}: {response.status_code}")
+            return []
+        
+    except Exception as e:
+        logger.error(f"Error getting user guild roles: {e}")
+        return []
+
+def check_user_role_access(guild_id, required_role_type='member'):
+    """Check if user has required role access in guild."""
+    try:
+        discord_user = session.get('discord_user')
+        if not discord_user:
+            return False
+        
+        # Get guild settings to find admin role
+        connection = get_db_connection()
+        if not connection:
+            return False
+        
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT admin_role, command_channel_1
+            FROM guild_settings 
+            WHERE guild_id = %s
+        """, (guild_id,))
+        
+        guild_settings = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        
+        if not guild_settings:
+            return False
+        
+        admin_role = guild_settings[0]
+        
+        # Get user's guild info from session
+        accessible_guilds = discord_user.get('accessible_guilds', [])
+        user_guild = None
+        
+        for guild in accessible_guilds:
+            if guild['id'] == str(guild_id):
+                user_guild = guild
+                break
+        
+        if not user_guild:
+            return False
+        
+        # Check permissions - if they have admin permissions, they can access admin pages
+        permissions = user_guild.get('permissions', 0)
+        
+        if required_role_type == 'admin':
+            # Check if user has administrator or manage guild permissions
+            has_admin_perms = (permissions & 0x8) == 0x8 or (permissions & 0x20) == 0x20
+            return has_admin_perms
+        
+        elif required_role_type == 'member':
+            # Any guild member can access member pages
+            return True
+        
+        return False
+        
+    except Exception as e:
+        logger.error(f"Error checking user role access: {e}")
+        return False
+
+def get_user_access_level(guild_id):
+    """Determine user's access level in guild (admin, member, or none)."""
+    try:
+        discord_user = session.get('discord_user')
+        if not discord_user:
+            return 'none'
+        
+        # Check if user has access to guild at all
+        if not check_guild_access(guild_id):
+            return 'none'
+        
+        # Check if user has admin access
+        if check_user_role_access(guild_id, 'admin'):
+            return 'admin'
+        
+        # Check if user has member access
+        if check_user_role_access(guild_id, 'member'):
+            return 'member'
+        
+        return 'none'
+        
+    except Exception as e:
+        logger.error(f"Error determining user access level: {e}")
+        return 'none'
+
 def check_guild_access(guild_id):
     """Check if the current user has access to a specific guild."""
     discord_user = session.get('discord_user')
@@ -830,21 +933,66 @@ def require_guild_access(guild_id):
     return decorator
 
 @app.route('/dashboard')
+@app.route('/guild-dashboard')
 def dashboard():
-    """Main dashboard page."""
+    """Guild Dashboard - Lists all guilds the user has access to"""
     try:
-        # Get active guilds for the dashboard
-        active_guilds = get_active_guilds()
+        conn = get_db_connection()
+        cursor = conn.cursor()
         
-        # Get live games for the dashboard
-        live_games = get_live_games()
+        # Get all guilds with their settings and stats
+        query = """
+        SELECT 
+            g.guild_id,
+            g.guild_name,
+            gs.embed_channel_1,
+            gs.command_channel_1,
+            gs.admin_role,
+            gs.base_unit_value,
+            gs.premium_enabled,
+            COUNT(DISTINCT b.bet_id) as total_bets,
+            COUNT(DISTINCT u.user_id) as total_users
+        FROM guilds g
+        LEFT JOIN guild_settings gs ON g.guild_id = gs.guild_id
+        LEFT JOIN bets b ON g.guild_id = b.guild_id
+        LEFT JOIN users u ON g.guild_id = u.guild_id
+        GROUP BY g.guild_id, g.guild_name, gs.embed_channel_1, gs.command_channel_1, 
+                 gs.admin_role, gs.base_unit_value, gs.premium_enabled
+        ORDER BY g.guild_name
+        """
         
-        return render_template('dashboard.html', 
-                            guilds=active_guilds,
-                            live_games=live_games)
+        cursor.execute(query)
+        guilds = cursor.fetchall()
+        
+        # Convert to list of dictionaries for easier template handling
+        guild_list = []
+        for guild in guilds:
+            guild_dict = {
+                'guild_id': guild[0],
+                'guild_name': guild[1],
+                'embed_channel': guild[2],
+                'command_channel': guild[3],
+                'admin_role': guild[4],
+                'base_unit_value': guild[5] or 1.0,
+                'premium_enabled': guild[6] or False,
+                'total_bets': guild[7] or 0,
+                'total_users': guild[8] or 0
+            }
+            guild_list.append(guild_dict)
+        
+        cursor.close()
+        conn.close()
+        
+        # Get Discord client ID from environment for invite links
+        discord_client_id = os.getenv('DISCORD_CLIENT_ID', '1341993312915034153')
+        
+        return render_template('guild_dashboard.html', 
+                             guilds=guild_list,
+                             discord_client_id=discord_client_id)
+        
     except Exception as e:
-        logger.error(f"Error rendering dashboard: {e}")
-        return render_template('dashboard.html', guilds=[], live_games=[])
+        logger.error(f"Error in guild_dashboard: {e}")
+        return render_template('error.html', error="Unable to load guild dashboard")
 
 @app.route('/')
 def index():
@@ -892,6 +1040,16 @@ def server_list():
 def subscribe():
     """Subscription landing page."""
     return render_template('subscription_landing.html')
+
+@app.route('/premium')
+def premium():
+    """Premium subscription page."""
+    return render_template('premium.html')
+
+@app.route('/platinum')
+def platinum():
+    """Platinum subscription page."""
+    return render_template('platinum.html')
 
 # Discord OAuth Routes
 @app.route('/auth/discord')
@@ -949,45 +1107,222 @@ def logout():
 
 @app.route('/guild/<int:guild_id>')
 def guild_home(guild_id):
-    """Guild home page."""
+    """Guild home page - redirects based on user role."""
     try:
         # Check if user has access to this guild
         if not check_guild_access(guild_id):
             return redirect(url_for('discord_login'))
         
-        # Get guild info from guild_settings with real names
+        # Determine user's access level
+        access_level = get_user_access_level(guild_id)
+        
+        if access_level == 'admin':
+            # Redirect to admin page
+            return redirect(url_for('guild_admin_page', guild_id=guild_id))
+        elif access_level == 'member':
+            # Redirect to member page
+            return redirect(url_for('guild_member_page', guild_id=guild_id))
+        else:
+            # No appropriate access
+            return redirect(url_for('discord_login'))
+        
+    except Exception as e:
+        logger.error(f"Error in guild_home: {e}")
+        return redirect(url_for('index'))
+
+@app.route('/guild/<int:guild_id>/admin')
+def guild_admin_page(guild_id):
+    """Guild admin page with full management capabilities."""
+    try:
+        # Check admin access
+        if not check_user_role_access(guild_id, 'admin'):
+            return redirect(url_for('guild_member_page', guild_id=guild_id))
+        
+        # Get guild info
         connection = get_db_connection()
         if connection:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor()
             cursor.execute("""
                 SELECT 
-                    guild_id,
-                    COALESCE(guild_name, CONCAT('Guild ', RIGHT(guild_id, 6))) as guild_name,
-                    subscription_level,
-                    is_active
-                FROM guild_settings 
-                WHERE guild_id = %s
+                    g.guild_id,
+                    g.guild_name,
+                    gs.embed_channel_1,
+                    gs.command_channel_1,
+                    gs.admin_role,
+                    gs.base_unit_value,
+                    gs.premium_enabled,
+                    gs.subscription_level
+                FROM guilds g
+                LEFT JOIN guild_settings gs ON g.guild_id = gs.guild_id
+                WHERE g.guild_id = %s
             """, (guild_id,))
             guild = cursor.fetchone()
-            cursor.close()
-            connection.close()
             
             if guild:
-                # Get guild statistics
-                guild_stats = get_guild_stats(guild_id)
+                # Get comprehensive admin statistics
+                cursor.execute("""
+                    SELECT 
+                        COUNT(DISTINCT b.user_id) as total_users,
+                        COUNT(b.bet_id) as total_bets,
+                        SUM(CASE WHEN b.bet_won = 1 THEN 1 ELSE 0 END) as total_wins,
+                        SUM(CASE WHEN b.bet_loss = 1 THEN 1 ELSE 0 END) as total_losses,
+                        AVG(b.bet_amount) as avg_bet_amount,
+                        SUM(b.bet_amount) as total_volume
+                    FROM bets b
+                    WHERE b.guild_id = %s
+                """, (guild_id,))
+                admin_stats = cursor.fetchone()
                 
-                # Get recent activity
-                recent_activity = get_recent_activity(guild_id)
+                # Get recent user activity
+                cursor.execute("""
+                    SELECT 
+                        b.user_id,
+                        b.bet_amount,
+                        b.odds,
+                        b.bet_description,
+                        b.created_at,
+                        b.bet_won,
+                        b.bet_loss
+                    FROM bets b
+                    WHERE b.guild_id = %s
+                    ORDER BY b.created_at DESC
+                    LIMIT 20
+                """, (guild_id,))
+                recent_activity = cursor.fetchall()
                 
-                return render_template('guild_home.html', 
-                                    guild=guild, 
-                                    guild_stats=guild_stats,
-                                    recent_activity=recent_activity,
-                                    guild_id=guild_id)
+                cursor.close()
+                connection.close()
+                
+                guild_data = {
+                    'guild_id': guild[0],
+                    'guild_name': guild[1],
+                    'embed_channel': guild[2],
+                    'command_channel': guild[3],
+                    'admin_role': guild[4],
+                    'base_unit_value': guild[5] or 1.0,
+                    'premium_enabled': guild[6] or False,
+                    'subscription_level': guild[7] or 'free'
+                }
+                
+                stats_data = {
+                    'total_users': admin_stats[0] or 0,
+                    'total_bets': admin_stats[1] or 0,
+                    'total_wins': admin_stats[2] or 0,
+                    'total_losses': admin_stats[3] or 0,
+                    'avg_bet_amount': admin_stats[4] or 0,
+                    'total_volume': admin_stats[5] or 0
+                }
+                
+                return render_template('guild_admin.html', 
+                                     guild=guild_data,
+                                     stats=stats_data,
+                                     recent_activity=recent_activity,
+                                     guild_id=guild_id)
         
         return redirect(url_for('index'))
     except Exception as e:
-        logger.error(f"Error rendering guild home: {e}")
+        logger.error(f"Error rendering guild admin page: {e}")
+        return redirect(url_for('index'))
+
+@app.route('/guild/<int:guild_id>/member')
+def guild_member_page(guild_id):
+    """Guild member page with limited access."""
+    try:
+        # Check member access
+        if not check_user_role_access(guild_id, 'member'):
+            return redirect(url_for('discord_login'))
+        
+        # Get guild info
+        connection = get_db_connection()
+        if connection:
+            cursor = connection.cursor()
+            cursor.execute("""
+                SELECT 
+                    g.guild_id,
+                    g.guild_name,
+                    gs.base_unit_value,
+                    gs.premium_enabled
+                FROM guilds g
+                LEFT JOIN guild_settings gs ON g.guild_id = gs.guild_id
+                WHERE g.guild_id = %s
+            """, (guild_id,))
+            guild = cursor.fetchone()
+            
+            if guild:
+                # Get user's personal stats
+                user_id = session.get('discord_user', {}).get('id')
+                cursor.execute("""
+                    SELECT 
+                        COUNT(b.bet_id) as my_total_bets,
+                        SUM(CASE WHEN b.bet_won = 1 THEN 1 ELSE 0 END) as my_wins,
+                        SUM(CASE WHEN b.bet_loss = 1 THEN 1 ELSE 0 END) as my_losses,
+                        AVG(b.bet_amount) as my_avg_bet,
+                        SUM(b.bet_amount) as my_total_wagered
+                    FROM bets b
+                    WHERE b.guild_id = %s AND b.user_id = %s
+                """, (guild_id, user_id))
+                user_stats = cursor.fetchone()
+                
+                # Get guild leaderboard (top 10)
+                cursor.execute("""
+                    SELECT 
+                        b.user_id,
+                        COUNT(b.bet_id) as total_bets,
+                        SUM(CASE WHEN b.bet_won = 1 THEN 1 ELSE 0 END) as wins,
+                        SUM(CASE WHEN b.bet_loss = 1 THEN 1 ELSE 0 END) as losses,
+                        SUM(b.bet_amount) as total_wagered
+                    FROM bets b
+                    WHERE b.guild_id = %s
+                    GROUP BY b.user_id
+                    ORDER BY wins DESC, total_bets DESC
+                    LIMIT 10
+                """, (guild_id,))
+                leaderboard = cursor.fetchall()
+                
+                # Get user's recent bets
+                cursor.execute("""
+                    SELECT 
+                        b.bet_amount,
+                        b.odds,
+                        b.bet_description,
+                        b.created_at,
+                        b.bet_won,
+                        b.bet_loss
+                    FROM bets b
+                    WHERE b.guild_id = %s AND b.user_id = %s
+                    ORDER BY b.created_at DESC
+                    LIMIT 10
+                """, (guild_id, user_id))
+                my_recent_bets = cursor.fetchall()
+                
+                cursor.close()
+                connection.close()
+                
+                guild_data = {
+                    'guild_id': guild[0],
+                    'guild_name': guild[1],
+                    'base_unit_value': guild[2] or 1.0,
+                    'premium_enabled': guild[3] or False
+                }
+                
+                user_stats_data = {
+                    'total_bets': user_stats[0] or 0,
+                    'wins': user_stats[1] or 0,
+                    'losses': user_stats[2] or 0,
+                    'avg_bet': user_stats[3] or 0,
+                    'total_wagered': user_stats[4] or 0
+                }
+                
+                return render_template('guild_member.html', 
+                                     guild=guild_data,
+                                     user_stats=user_stats_data,
+                                     leaderboard=leaderboard,
+                                     my_recent_bets=my_recent_bets,
+                                     guild_id=guild_id)
+        
+        return redirect(url_for('index'))
+    except Exception as e:
+        logger.error(f"Error rendering guild member page: {e}")
         return redirect(url_for('index'))
 
 @app.route('/guild/<int:guild_id>/live-scores')

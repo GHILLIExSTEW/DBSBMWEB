@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ guild.guild_name }} - Admin Dashboard</title>
+    <link rel="icon" type="image/webp" href="/static/favicon.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/sportsbook-theme.css" rel="stylesheet">
+    <style>
+        .admin-header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/static/images/winning_bet.webp') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        .admin-header .content {
+            position: relative;
+            z-index: 2;
+        }
+        .admin-badge {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px solid #dc2626;
+            color: #dc2626;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .admin-stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .admin-stat-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(220, 38, 38, 0.3);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.1);
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .admin-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .config-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid #dc2626;
+        }
+        .config-label {
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .config-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .config-value.not-set {
+            color: #dc2626;
+            font-style: italic;
+        }
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(220, 38, 38, 0.3) transparent;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .activity-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            border-left-color: #dc2626;
+        }
+        .activity-item.win {
+            border-left-color: #22c55e;
+        }
+        .activity-item.loss {
+            border-left-color: #ef4444;
+        }
+        .activity-icon {
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            color: #dc2626;
+        }
+        .activity-item.win .activity-icon {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+        .activity-item.loss .activity-icon {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        .activity-details {
+            flex: 1;
+        }
+        .activity-user {
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 0.25rem;
+        }
+        .activity-description {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        .activity-amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .activity-item.win .activity-amount {
+            color: #22c55e;
+        }
+        .activity-item.loss .activity-amount {
+            color: #ef4444;
+        }
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .admin-btn {
+            padding: 1rem 1.5rem;
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 12px;
+            color: #dc2626;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .admin-btn:hover {
+            background: rgba(220, 38, 38, 0.2);
+            border-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.2);
+            color: #dc2626;
+            text-decoration: none;
+        }
+        .admin-btn.primary {
+            background: linear-gradient(45deg, #dc2626, #b91c1c);
+            color: white;
+            border-color: #dc2626;
+        }
+        .admin-btn.primary:hover {
+            background: linear-gradient(45deg, #b91c1c, #dc2626);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="main-bg"></div>
+    <div class="page-bg" style="background-image: url('/static/images/winning_bet.webp');"></div>
+    
+    <!-- Fixed Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> BetGenius AI
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/server-list" class="nav-link">Servers</a></li>
+                <li><a href="/guild/{{ guild_id }}/admin" class="nav-link active">Admin Panel</a></li>
+                <li><a href="/auth/logout" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding-top: 100px; max-width: 1400px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem;">
+        <!-- Admin Header -->
+        <div class="admin-header fade-in">
+            <div class="content" style="text-align: center;">
+                <div class="admin-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    Administrator Access
+                </div>
+                <h1 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem;">
+                    <i class="fab fa-discord"></i>
+                    {{ guild.guild_name }}
+                </h1>
+                <p style="font-size: 1.1rem; opacity: 0.9; margin: 0;">
+                    Complete guild management and analytics
+                </p>
+            </div>
+        </div>
+
+        <!-- Statistics Overview -->
+        <section class="admin-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i>
+                Guild Statistics
+            </h2>
+            <div class="stats-grid">
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-value">{{ stats.total_users }}</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dice"></i>
+                    </div>
+                    <div class="stat-value">{{ stats.total_bets }}</div>
+                    <div class="stat-label">Total Bets</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-value">{{ stats.total_wins }}</div>
+                    <div class="stat-label">Winning Bets</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-value">{{ stats.total_losses }}</div>
+                    <div class="stat-label">Losing Bets</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-value">${{ "%.2f"|format(stats.avg_bet_amount) }}</div>
+                    <div class="stat-label">Avg Bet Amount</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-value">${{ "%.2f"|format(stats.total_volume) }}</div>
+                    <div class="stat-label">Total Volume</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guild Configuration -->
+        <section class="admin-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-cogs"></i>
+                Guild Configuration
+            </h2>
+            <div class="config-grid">
+                <div class="config-item">
+                    <div class="config-label">Embed Channel</div>
+                    <div class="config-value {% if not guild.embed_channel %}not-set{% endif %}">
+                        {% if guild.embed_channel %}
+                            <i class="fas fa-hashtag"></i> {{ guild.embed_channel }}
+                        {% else %}
+                            Not configured
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Command Channel</div>
+                    <div class="config-value {% if not guild.command_channel %}not-set{% endif %}">
+                        {% if guild.command_channel %}
+                            <i class="fas fa-hashtag"></i> {{ guild.command_channel }}
+                        {% else %}
+                            Not configured
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Admin Role</div>
+                    <div class="config-value {% if not guild.admin_role %}not-set{% endif %}">
+                        {% if guild.admin_role %}
+                            <i class="fas fa-shield-alt"></i> {{ guild.admin_role }}
+                        {% else %}
+                            Not configured
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Base Unit Value</div>
+                    <div class="config-value">
+                        <i class="fas fa-dollar-sign"></i> {{ "%.2f"|format(guild.base_unit_value) }}
+                    </div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Premium Status</div>
+                    <div class="config-value">
+                        {% if guild.premium_enabled %}
+                            <i class="fas fa-crown" style="color: #ffd700;"></i> Enabled
+                        {% else %}
+                            <i class="fas fa-times"></i> Disabled
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Subscription Level</div>
+                    <div class="config-value">
+                        <i class="fas fa-tag"></i> {{ guild.subscription_level.title() }}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="admin-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Recent Activity
+            </h2>
+            <div class="activity-list">
+                {% for activity in recent_activity %}
+                <div class="activity-item {% if activity[5] %}win{% elif activity[6] %}loss{% endif %}">
+                    <div class="activity-icon">
+                        {% if activity[5] %}
+                            <i class="fas fa-trophy"></i>
+                        {% elif activity[6] %}
+                            <i class="fas fa-times"></i>
+                        {% else %}
+                            <i class="fas fa-clock"></i>
+                        {% endif %}
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-user">User {{ activity[0] }}</div>
+                        <div class="activity-description">{{ activity[3] or 'Bet placed' }}</div>
+                    </div>
+                    <div class="activity-amount">
+                        {% if activity[5] %}
+                            +${{ "%.2f"|format(activity[1]) }}
+                        {% elif activity[6] %}
+                            -${{ "%.2f"|format(activity[1]) }}
+                        {% else %}
+                            ${{ "%.2f"|format(activity[1]) }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if not recent_activity %}
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>No recent activity found</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Admin Actions -->
+        <section class="admin-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-tools"></i>
+                Administrative Actions
+            </h2>
+            <div class="admin-actions">
+                <a href="/guild/{{ guild_id }}/settings" class="admin-btn primary">
+                    <i class="fas fa-cog"></i>
+                    Guild Settings
+                </a>
+                <a href="/guild/{{ guild_id }}/customize" class="admin-btn">
+                    <i class="fas fa-palette"></i>
+                    Customize Page
+                </a>
+                <a href="/guild/{{ guild_id }}/subscriptions" class="admin-btn">
+                    <i class="fas fa-credit-card"></i>
+                    Subscriptions
+                </a>
+                <a href="/guild/{{ guild_id }}/member" class="admin-btn">
+                    <i class="fas fa-eye"></i>
+                    View as Member
+                </a>
+                <a href="/guild/{{ guild_id }}/live-scores" class="admin-btn">
+                    <i class="fas fa-chart-line"></i>
+                    Live Scores
+                </a>
+                <a href="/guild/{{ guild_id }}/player-stats" class="admin-btn">
+                    <i class="fas fa-users-cog"></i>
+                    Player Stats
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+            <p style="color: #666; margin: 0;">&copy; 2025 BetGenius AI - Guild Administration</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add fade-in animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

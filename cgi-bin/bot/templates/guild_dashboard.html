@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guild Dashboard - BetTracking Bot</title>
+    <link rel="icon" type="image/webp" href="/static/favicon.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/sportsbook-theme.css" rel="stylesheet">
+    <style>
+        .guild-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .guild-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+        .guild-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .guild-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .guild-id {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.25rem;
+        }
+        .premium-badge {
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            color: #000;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 0.25rem;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .config-item {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            border-left: 3px solid #ffd700;
+        }
+        .config-label {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .config-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #fff;
+        }
+        .config-value.not-configured {
+            color: #666;
+            font-style: italic;
+        }
+        .guild-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .guild-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .guild-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            text-decoration: none;
+        }
+        .guild-btn.primary {
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            color: #000;
+            border-color: #ffd700;
+        }
+        .guild-btn.primary:hover {
+            background: linear-gradient(45deg, #ffed4a, #ffd700);
+            color: #000;
+        }
+        .guild-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+        .page-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+        .summary-stats {
+            display: inline-flex;
+            gap: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .summary-stat {
+            text-align: center;
+        }
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        .summary-label {
+            font-size: 0.8rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+        .no-guilds {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .no-guilds-icon {
+            font-size: 4rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        .add-bot-section {
+            margin-top: 3rem;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="main-bg"></div>
+    <div class="page-bg" style="background-image: url('/static/images/winning_bet.webp');"></div>
+    
+    <!-- Fixed Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> BetGenius AI
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard" class="nav-link active">Dashboard</a></li>
+                <li><a href="/server-list" class="nav-link">Servers</a></li>
+                <li><a href="#" class="nav-link">Analytics</a></li>
+                <li><a href="/auth/logout" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding-top: 100px; max-width: 1400px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem;">
+        <!-- Page Header -->
+        <div class="page-header fade-in">
+            <h1 class="page-title">
+                <i class="fas fa-tachometer-alt"></i>
+                Guild Dashboard
+            </h1>
+            <p class="page-subtitle">Manage and monitor your Discord servers</p>
+            
+            {% if guilds %}
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="summary-value">{{ guilds|length }}</div>
+                    <div class="summary-label">Servers</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-value">{{ guilds|sum(attribute='total_bets') }}</div>
+                    <div class="summary-label">Total Bets</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-value">{{ guilds|sum(attribute='total_users') }}</div>
+                    <div class="summary-label">Total Users</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if guilds %}
+            <!-- Guild Grid -->
+            <div class="guild-grid fade-in">
+                {% for guild in guilds %}
+                <div class="guild-card">
+                    <!-- Guild Header -->
+                    <div class="guild-header">
+                        <div>
+                            <h3 class="guild-name">
+                                <i class="fab fa-discord"></i>
+                                {{ guild.guild_name }}
+                            </h3>
+                            <div class="guild-id">ID: {{ guild.guild_id }}</div>
+                        </div>
+                        {% if guild.premium_enabled %}
+                            <span class="premium-badge">
+                                <i class="fas fa-crown"></i>
+                                Premium
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-value">{{ guild.total_bets }}</div>
+                            <div class="stat-label">Bets</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ guild.total_users }}</div>
+                            <div class="stat-label">Users</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${{ "%.2f"|format(guild.base_unit_value) }}</div>
+                            <div class="stat-label">Base Unit</div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration -->
+                    <div class="config-grid">
+                        <div class="config-item">
+                            <div class="config-label">Embed Channel</div>
+                            <div class="config-value {% if not guild.embed_channel %}not-configured{% endif %}">
+                                {% if guild.embed_channel %}
+                                    <i class="fas fa-hashtag"></i> {{ guild.embed_channel }}
+                                {% else %}
+                                    Not configured
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="config-item">
+                            <div class="config-label">Command Channel</div>
+                            <div class="config-value {% if not guild.command_channel %}not-configured{% endif %}">
+                                {% if guild.command_channel %}
+                                    <i class="fas fa-hashtag"></i> {{ guild.command_channel }}
+                                {% else %}
+                                    Not configured
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="config-item">
+                            <div class="config-label">Admin Role</div>
+                            <div class="config-value {% if not guild.admin_role %}not-configured{% endif %}">
+                                {% if guild.admin_role %}
+                                    <i class="fas fa-shield-alt"></i> {{ guild.admin_role }}
+                                {% else %}
+                                    Not configured
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="guild-actions">
+                        <a href="/guild/{{ guild.guild_id }}" class="guild-btn primary">
+                            <i class="fas fa-cog"></i>
+                            Manage Server
+                        </a>
+                        <a href="/guild/{{ guild.guild_id }}/settings" class="guild-btn">
+                            <i class="fas fa-sliders-h"></i>
+                            Settings
+                        </a>
+                        <a href="/guild/{{ guild.guild_id }}/live-scores" class="guild-btn">
+                            <i class="fas fa-chart-line"></i>
+                            Live Scores
+                        </a>
+                        <a href="/guild/{{ guild.guild_id }}/player-stats" class="guild-btn">
+                            <i class="fas fa-user-chart"></i>
+                            Player Stats
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Add Bot Section -->
+            <div class="add-bot-section fade-in">
+                <h3 style="color: #ffd700; margin-bottom: 1rem;">
+                    <i class="fas fa-plus-circle"></i>
+                    Need to add the bot to a new server?
+                </h3>
+                <p style="color: #ccc; margin-bottom: 1.5rem;">
+                    Add BetTracking Bot to your Discord server to start tracking bets and analytics
+                </p>
+                <a href="https://discord.com/oauth2/authorize?client_id={{ discord_client_id }}&permissions=592632405814384&scope=bot" 
+                   class="guild-btn primary" target="_blank" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                    <i class="fab fa-discord"></i>
+                    Add Bot to Server
+                </a>
+            </div>
+
+        {% else %}
+            <!-- No Guilds State -->
+            <div class="no-guilds fade-in">
+                <div class="no-guilds-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <h2 style="color: #ffd700; margin-bottom: 1rem;">No Servers Found</h2>
+                <p style="color: #ccc; margin-bottom: 2rem;">
+                    You don't have access to any Discord servers with BetTracking Bot installed.
+                </p>
+                <a href="https://discord.com/oauth2/authorize?client_id={{ discord_client_id }}&permissions=592632405814384&scope=bot" 
+                   class="guild-btn primary" target="_blank" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                    <i class="fab fa-discord"></i>
+                    Add Bot to Your Server
+                </a>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+            <p style="color: #666; margin: 0;">&copy; 2025 BetGenius AI - Discord Server Management</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

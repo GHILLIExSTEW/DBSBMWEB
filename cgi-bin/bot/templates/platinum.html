@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platinum Plan - BetGenius AI</title>
+    <link rel="icon" type="image/webp" href="/static/favicon.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/sportsbook-theme.css" rel="stylesheet">
+    <style>
+        .platinum-header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .platinum-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/static/images/winning_bet.webp') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        .platinum-header .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .platinum-badge {
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid #8b5cf6;
+            color: #8b5cf6;
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .vip-badge {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+        .plan-pricing {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .price-display {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+        .price-period {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        .price-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .exclusive-features {
+            background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.1));
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+        }
+        .exclusive-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #8b5cf6;
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .feature-section:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.15);
+        }
+        .feature-section.premium-only::before {
+            content: 'PLATINUM EXCLUSIVE';
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #8b5cf6;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border-left: 3px solid #8b5cf6;
+        }
+        .feature-icon {
+            color: #22c55e;
+            font-size: 1.2rem;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+        .feature-text {
+            color: #fff;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .feature-description {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .vip-perks {
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.05));
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+        }
+        .vip-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .vip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .vip-perk {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .vip-perk:hover {
+            border-color: #ffd700;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
+        }
+        .vip-icon {
+            font-size: 2.5rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+        .vip-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+        .vip-description {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .cta-section {
+            background: rgba(139, 92, 246, 0.1);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 25px;
+            padding: 3rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+        .cta-description {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta-btn {
+            padding: 1.25rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 200px;
+            justify-content: center;
+        }
+        .cta-btn.primary {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: 2px solid #8b5cf6;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        }
+        .cta-btn.primary:hover {
+            background: linear-gradient(45deg, #7c3aed, #8b5cf6);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        .cta-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #8b5cf6;
+            border: 2px solid rgba(139, 92, 246, 0.5);
+        }
+        .cta-btn.secondary:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: #8b5cf6;
+            transform: translateY(-3px);
+            color: #8b5cf6;
+            text-decoration: none;
+        }
+        .comparison-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+        }
+        .comparison-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .plan-comparison {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .plan-comparison.current {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .plan-comparison:hover {
+            transform: translateY(-3px);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+        .plan-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .plan-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .plan-features li {
+            padding: 0.5rem 0;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        .testimonials {
+            margin: 3rem 0;
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .testimonial {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 4px solid #8b5cf6;
+        }
+        .testimonial-text {
+            color: #ccc;
+            font-style: italic;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .testimonial-author {
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+        .platinum-guarantee {
+            background: linear-gradient(45deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        .guarantee-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #22c55e;
+            margin-bottom: 1rem;
+        }
+        .guarantee-text {
+            color: #ccc;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="main-bg"></div>
+    <div class="page-bg" style="background-image: url('/static/images/winning_bet.webp');"></div>
+    
+    <!-- Fixed Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> BetGenius AI
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/subscribe" class="nav-link">Plans</a></li>
+                <li><a href="/premium" class="nav-link">Premium</a></li>
+                <li><a href="/platinum" class="nav-link active">Platinum</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding-top: 100px; max-width: 1400px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem;">
+        <!-- Platinum Header -->
+        <div class="platinum-header fade-in">
+            <div class="content">
+                <div class="platinum-badge">
+                    <i class="fas fa-gem"></i>
+                    Platinum Plan
+                    <span class="vip-badge">VIP ACCESS</span>
+                </div>
+                <h1 style="font-size: 3.5rem; font-weight: 900; margin-bottom: 1rem;">
+                    The Ultimate Betting Experience
+                </h1>
+                <p style="font-size: 1.3rem; opacity: 0.9; margin: 0; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Expert-level AI, personal betting advisor, and exclusive VIP access to everything BetGenius AI offers
+                </p>
+            </div>
+        </div>
+
+        <!-- Pricing Section -->
+        <section class="fade-in">
+            <div class="plan-pricing">
+                <div class="price-display">$149<span style="font-size: 2rem;">/month</span></div>
+                <div class="price-period">Billed monthly • 30-day money-back guarantee</div>
+                <div class="price-description">
+                    The most comprehensive betting platform for professionals and serious investors who demand the absolute best
+                </div>
+            </div>
+        </section>
+
+        <!-- Exclusive Platinum Features -->
+        <section class="exclusive-features fade-in">
+            <h2 class="exclusive-title">
+                <i class="fas fa-star"></i>
+                Platinum Exclusive Features
+            </h2>
+            <div class="features-grid">
+                <div class="feature-section premium-only">
+                    <h3 class="feature-title">
+                        <i class="fas fa-user-tie"></i>
+                        Personal Betting Advisor
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Dedicated Expert Analyst</div>
+                                <div class="feature-description">Your personal professional handicapper available 24/7</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Custom Betting Strategies</div>
+                                <div class="feature-description">Personalized strategies based on your bankroll and risk tolerance</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Weekly Strategy Calls</div>
+                                <div class="feature-description">One-on-one sessions to review performance and adjust strategies</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-section premium-only">
+                    <h3 class="feature-title">
+                        <i class="fas fa-microscope"></i>
+                        Expert AI Predictions
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Proprietary AI Models</div>
+                                <div class="feature-description">Access to our most advanced, Platinum-exclusive algorithms</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Insider Information Integration</div>
+                                <div class="feature-description">Legal insider info from league contacts and injury reports</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Pre-market Predictions</div>
+                                <div class="feature-description">Get predictions before lines are published to the public</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-section premium-only">
+                    <h3 class="feature-title">
+                        <i class="fas fa-eye"></i>
+                        Exclusive Market Insights
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Sharp Money Tracking</div>
+                                <div class="feature-description">Real-time alerts when professional bettors place large wagers</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Sportsbook Liability Reports</div>
+                                <div class="feature-description">Exclusive data on where sportsbooks are most vulnerable</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Market Manipulation Alerts</div>
+                                <div class="feature-description">Advanced warnings about suspicious line movements</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-section premium-only">
+                    <h3 class="feature-title">
+                        <i class="fas fa-shield-alt"></i>
+                        White-Glove Support
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Dedicated Account Manager</div>
+                                <div class="feature-description">Personal contact who knows your account and preferences</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Instant Response Guarantee</div>
+                                <div class="feature-description">Guaranteed response within 15 minutes, 24/7/365</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Priority Feature Requests</div>
+                                <div class="feature-description">Direct input on product development and new features</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIP Perks -->
+        <section class="vip-perks fade-in">
+            <h2 class="vip-title">
+                <i class="fas fa-crown"></i>
+                VIP Platinum Perks
+            </h2>
+            <div class="vip-grid">
+                <div class="vip-perk">
+                    <div class="vip-icon">
+                        <i class="fas fa-users-crown"></i>
+                    </div>
+                    <div class="vip-name">Exclusive VIP Community</div>
+                    <div class="vip-description">Private Discord server with only Platinum members and professional handicappers</div>
+                </div>
+                <div class="vip-perk">
+                    <div class="vip-icon">
+                        <i class="fas fa-calendar-star"></i>
+                    </div>
+                    <div class="vip-name">Monthly VIP Events</div>
+                    <div class="vip-description">Exclusive webinars, Q&A sessions, and live betting events with pros</div>
+                </div>
+                <div class="vip-perk">
+                    <div class="vip-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="vip-name">Platinum Rewards</div>
+                    <div class="vip-description">Exclusive merchandise, bonus features, and surprise rewards throughout the year</div>
+                </div>
+                <div class="vip-perk">
+                    <div class="vip-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="vip-name">Beta Feature Access</div>
+                    <div class="vip-description">First access to all new features, tools, and AI model updates</div>
+                </div>
+                <div class="vip-perk">
+                    <div class="vip-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="vip-name">Partner Privileges</div>
+                    <div class="vip-description">Exclusive deals with sportsbooks, betting tools, and industry partners</div>
+                </div>
+                <div class="vip-perk">
+                    <div class="vip-icon">
+                        <i class="fas fa-chart-network"></i>
+                    </div>
+                    <div class="vip-name">Investment Opportunities</div>
+                    <div class="vip-description">Access to exclusive betting syndicate and investment opportunities</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Everything Included -->
+        <section class="fade-in">
+            <h2 style="text-align: center; font-size: 2rem; font-weight: 700; color: #ffd700; margin-bottom: 2rem;">
+                Everything from Premium, Plus:
+            </h2>
+            <div class="features-grid">
+                <div class="feature-section">
+                    <h3 class="feature-title">
+                        <i class="fas fa-infinity"></i>
+                        Unlimited Everything
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">All Sports & Markets</div>
+                                <div class="feature-description">Every sport, every league, every market we cover</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Unlimited API Calls</div>
+                                <div class="feature-description">No rate limits on any features or data access</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Custom Integrations</div>
+                                <div class="feature-description">We'll build custom integrations for your workflow</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-section">
+                    <h3 class="feature-title">
+                        <i class="fas fa-database"></i>
+                        Advanced Data Access
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Raw Data Exports</div>
+                                <div class="feature-description">Download all historical data for your own analysis</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">API Documentation</div>
+                                <div class="feature-description">Full API access to build your own applications</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Custom Reports</div>
+                                <div class="feature-description">We'll create custom reports tailored to your needs</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Platinum Guarantee -->
+        <section class="platinum-guarantee fade-in">
+            <h3 class="guarantee-title">
+                <i class="fas fa-shield-check"></i>
+                30-Day Platinum Guarantee
+            </h3>
+            <p class="guarantee-text">
+                We're so confident in Platinum that we offer a full 30-day money-back guarantee. 
+                If you don't see a significant improvement in your betting performance within 30 days, 
+                we'll refund every penny - no questions asked.
+            </p>
+        </section>
+
+        <!-- Plan Comparison -->
+        <section class="comparison-section fade-in">
+            <h2 class="comparison-title">The Complete Comparison</h2>
+            <div class="comparison-grid">
+                <div class="plan-comparison">
+                    <div class="plan-name" style="color: #999;">Basic</div>
+                    <div class="plan-price" style="color: #999;">$29/mo</div>
+                    <ul class="plan-features">
+                        <li>Basic AI predictions</li>
+                        <li>5 sports leagues</li>
+                        <li>Basic analytics</li>
+                        <li>Email support</li>
+                    </ul>
+                </div>
+                <div class="plan-comparison">
+                    <div class="plan-name" style="color: #f59e0b;">Premium</div>
+                    <div class="plan-price" style="color: #f59e0b;">$79/mo</div>
+                    <ul class="plan-features">
+                        <li>Advanced AI predictions</li>
+                        <li>20+ sports leagues</li>
+                        <li>Professional analytics</li>
+                        <li>Odds comparison</li>
+                        <li>Priority support</li>
+                        <li>Premium community</li>
+                    </ul>
+                </div>
+                <div class="plan-comparison current">
+                    <div class="plan-name" style="color: #8b5cf6;">Platinum</div>
+                    <div class="plan-price">$149/mo</div>
+                    <ul class="plan-features">
+                        <li>Expert AI predictions</li>
+                        <li>Personal betting advisor</li>
+                        <li>Exclusive market insights</li>
+                        <li>White-glove support</li>
+                        <li>VIP community access</li>
+                        <li>Unlimited everything</li>
+                        <li>Custom integrations</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials fade-in">
+            <h2 style="text-align: center; font-size: 2rem; font-weight: 700; color: #ffd700; margin-bottom: 2rem;">
+                What Platinum VIPs Say
+            </h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "My personal betting advisor helped me turn a $50K bankroll into $200K in 8 months. The VIP community is incredible - like having a team of pros working with you."
+                    </div>
+                    <div class="testimonial-author">- Marcus D., Platinum VIP</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "The exclusive market insights are game-changing. I'm getting information that gives me a significant edge over other bettors. Worth every penny and more."
+                    </div>
+                    <div class="testimonial-author">- Jennifer L., Platinum VIP</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "Platinum isn't just a subscription - it's like having a professional betting operation at your fingertips. The level of service and results are unmatched."
+                    </div>
+                    <div class="testimonial-author">- David K., Platinum VIP</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta-section fade-in">
+            <h2 class="cta-title">Ready for VIP Treatment?</h2>
+            <p class="cta-description">
+                Join the elite circle of Platinum VIP members who are consistently beating the books. 
+                Limited to 100 members worldwide - secure your spot today.
+            </p>
+            <div class="cta-buttons">
+                <a href="/auth/discord" class="cta-btn primary">
+                    <i class="fas fa-gem"></i>
+                    Become Platinum VIP
+                </a>
+                <a href="/premium" class="cta-btn secondary">
+                    <i class="fas fa-crown"></i>
+                    Compare with Premium
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+            <p style="color: #666; margin: 0;">&copy; 2025 BetGenius AI - Platinum VIP Subscription Plan</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add fade-in animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

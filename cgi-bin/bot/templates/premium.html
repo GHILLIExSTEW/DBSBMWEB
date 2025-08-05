@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Plan - BetGenius AI</title>
+    <link rel="icon" type="image/webp" href="/static/favicon.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/sportsbook-theme.css" rel="stylesheet">
+    <style>
+        .premium-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/static/images/winning_bet.webp') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        .premium-header .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .premium-badge {
+            background: rgba(245, 158, 11, 0.2);
+            border: 2px solid #f59e0b;
+            color: #f59e0b;
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .plan-pricing {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .price-display {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+        .price-period {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        .price-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        .feature-section:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.15);
+        }
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border-left: 3px solid #f59e0b;
+        }
+        .feature-icon {
+            color: #22c55e;
+            font-size: 1.2rem;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+        .feature-text {
+            color: #fff;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .feature-description {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .cta-section {
+            background: rgba(245, 158, 11, 0.1);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 25px;
+            padding: 3rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+        .cta-description {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta-btn {
+            padding: 1.25rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 200px;
+            justify-content: center;
+        }
+        .cta-btn.primary {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            color: white;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+        .cta-btn.primary:hover {
+            background: linear-gradient(45deg, #d97706, #f59e0b);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(245, 158, 11, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        .cta-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f59e0b;
+            border: 2px solid rgba(245, 158, 11, 0.5);
+        }
+        .cta-btn.secondary:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+            transform: translateY(-3px);
+            color: #f59e0b;
+            text-decoration: none;
+        }
+        .comparison-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+        }
+        .comparison-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .plan-comparison {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .plan-comparison.current {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+        .plan-comparison:hover {
+            transform: translateY(-3px);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+        .plan-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .plan-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .plan-features li {
+            padding: 0.5rem 0;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        .testimonials {
+            margin: 3rem 0;
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .testimonial {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 4px solid #f59e0b;
+        }
+        .testimonial-text {
+            color: #ccc;
+            font-style: italic;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .testimonial-author {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="main-bg"></div>
+    <div class="page-bg" style="background-image: url('/static/images/winning_bet.webp');"></div>
+    
+    <!-- Fixed Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> BetGenius AI
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/subscribe" class="nav-link">Plans</a></li>
+                <li><a href="/premium" class="nav-link active">Premium</a></li>
+                <li><a href="/platinum" class="nav-link">Platinum</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding-top: 100px; max-width: 1400px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem;">
+        <!-- Premium Header -->
+        <div class="premium-header fade-in">
+            <div class="content">
+                <div class="premium-badge">
+                    <i class="fas fa-crown"></i>
+                    Premium Plan
+                </div>
+                <h1 style="font-size: 3.5rem; font-weight: 900; margin-bottom: 1rem;">
+                    Elevate Your Betting Game
+                </h1>
+                <p style="font-size: 1.3rem; opacity: 0.9; margin: 0; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Advanced AI predictions, comprehensive analytics, and professional-grade tools for serious bettors
+                </p>
+            </div>
+        </div>
+
+        <!-- Pricing Section -->
+        <section class="fade-in">
+            <div class="plan-pricing">
+                <div class="price-display">$79<span style="font-size: 2rem;">/month</span></div>
+                <div class="price-period">Billed monthly • Cancel anytime</div>
+                <div class="price-description">
+                    Perfect for serious bettors who want advanced analytics and AI-powered insights to maximize their winning potential
+                </div>
+            </div>
+        </section>
+
+        <!-- Premium Features -->
+        <section class="fade-in">
+            <div class="features-grid">
+                <div class="feature-section">
+                    <h3 class="feature-title">
+                        <i class="fas fa-brain"></i>
+                        Advanced AI Predictions
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Machine Learning Models</div>
+                                <div class="feature-description">Advanced algorithms analyzing 500+ data points per game</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Real-time Prediction Updates</div>
+                                <div class="feature-description">Live adjustments based on team news, weather, and injuries</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Confidence Scoring</div>
+                                <div class="feature-description">AI confidence levels from 1-100 for each prediction</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Multi-Sport Coverage</div>
+                                <div class="feature-description">NFL, NBA, MLB, NHL, Soccer, and 15+ additional leagues</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-section">
+                    <h3 class="feature-title">
+                        <i class="fas fa-chart-line"></i>
+                        Professional Analytics
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Advanced Performance Metrics</div>
+                                <div class="feature-description">ROI, win rate, profit/loss tracking with detailed breakdowns</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Bankroll Management Tools</div>
+                                <div class="feature-description">Kelly Criterion, unit sizing, and risk management calculators</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Historical Data Analysis</div>
+                                <div class="feature-description">3+ years of historical betting data and trend analysis</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Custom Reporting</div>
+                                <div class="feature-description">Weekly and monthly performance reports with insights</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-section">
+                    <h3 class="feature-title">
+                        <i class="fas fa-tools"></i>
+                        Premium Tools
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Odds Comparison Engine</div>
+                                <div class="feature-description">Real-time odds from 25+ sportsbooks with best line alerts</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Line Movement Tracking</div>
+                                <div class="feature-description">Track line movements and identify sharp money indicators</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Arbitrage Opportunities</div>
+                                <div class="feature-description">Automatic detection of risk-free betting opportunities</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Custom Alerts & Notifications</div>
+                                <div class="feature-description">Discord, email, and mobile alerts for key events</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="feature-section">
+                    <h3 class="feature-title">
+                        <i class="fas fa-users"></i>
+                        Community & Support
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Premium Discord Community</div>
+                                <div class="feature-description">Access to exclusive Premium-only channels and discussions</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Priority Customer Support</div>
+                                <div class="feature-description">24/7 priority support with guaranteed 2-hour response time</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Expert Strategy Sessions</div>
+                                <div class="feature-description">Weekly live sessions with professional handicappers</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check feature-icon"></i>
+                            <div>
+                                <div class="feature-text">Early Feature Access</div>
+                                <div class="feature-description">Beta access to new features and tools before public release</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plan Comparison -->
+        <section class="comparison-section fade-in">
+            <h2 class="comparison-title">How Premium Compares</h2>
+            <div class="comparison-grid">
+                <div class="plan-comparison">
+                    <div class="plan-name" style="color: #999;">Basic</div>
+                    <div class="plan-price" style="color: #999;">$29/mo</div>
+                    <ul class="plan-features">
+                        <li>Basic AI predictions</li>
+                        <li>5 sports leagues</li>
+                        <li>Basic analytics</li>
+                        <li>Email support</li>
+                    </ul>
+                </div>
+                <div class="plan-comparison current">
+                    <div class="plan-name" style="color: #f59e0b;">Premium</div>
+                    <div class="plan-price">$79/mo</div>
+                    <ul class="plan-features">
+                        <li>Advanced AI predictions</li>
+                        <li>20+ sports leagues</li>
+                        <li>Professional analytics</li>
+                        <li>Odds comparison</li>
+                        <li>Priority support</li>
+                        <li>Premium community</li>
+                    </ul>
+                </div>
+                <div class="plan-comparison">
+                    <div class="plan-name" style="color: #8b5cf6;">Platinum</div>
+                    <div class="plan-price" style="color: #8b5cf6;">$149/mo</div>
+                    <ul class="plan-features">
+                        <li>Expert AI predictions</li>
+                        <li>All sports & markets</li>
+                        <li>Personal betting advisor</li>
+                        <li>Exclusive insights</li>
+                        <li>White-glove support</li>
+                        <li>VIP community</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials fade-in">
+            <h2 style="text-align: center; font-size: 2rem; font-weight: 700; color: #ffd700; margin-bottom: 2rem;">
+                What Premium Users Say
+            </h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "The advanced analytics completely changed how I approach betting. I'm up 35% this season thanks to the AI predictions and bankroll management tools."
+                    </div>
+                    <div class="testimonial-author">- Mike R., Premium User</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "The odds comparison feature alone saves me hundreds of dollars each month by finding the best lines. Premium pays for itself in the first week."
+                    </div>
+                    <div class="testimonial-author">- Sarah K., Premium User</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "Love the Premium Discord community. The weekly strategy sessions with the pros have taken my betting to the next level."
+                    </div>
+                    <div class="testimonial-author">- James T., Premium User</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta-section fade-in">
+            <h2 class="cta-title">Ready to Go Premium?</h2>
+            <p class="cta-description">
+                Join thousands of successful bettors who trust BetGenius AI Premium for their betting edge. 
+                Start your 7-day free trial today - no commitment, cancel anytime.
+            </p>
+            <div class="cta-buttons">
+                <a href="/auth/discord" class="cta-btn primary">
+                    <i class="fas fa-crown"></i>
+                    Start 7-Day Free Trial
+                </a>
+                <a href="/platinum" class="cta-btn secondary">
+                    <i class="fas fa-gem"></i>
+                    View Platinum Plan
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+            <p style="color: #666; margin: 0;">&copy; 2025 BetGenius AI - Premium Subscription Plan</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add fade-in animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

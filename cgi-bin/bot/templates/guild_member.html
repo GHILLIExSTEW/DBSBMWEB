@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ guild.guild_name }} - Member Dashboard</title>
+    <link rel="icon" type="image/webp" href="/static/favicon.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/sportsbook-theme.css" rel="stylesheet">
+    <style>
+        .member-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .member-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/static/images/lobby.webp') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        .member-header .content {
+            position: relative;
+            z-index: 2;
+        }
+        .member-badge {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .personal-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .personal-stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .personal-stat-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .member-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .leaderboard {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .leaderboard-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            border-left-color: #3b82f6;
+        }
+        .leaderboard-item.current-user {
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .leaderboard-rank {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffd700;
+            min-width: 40px;
+            text-align: center;
+        }
+        .leaderboard-rank.top-3 {
+            color: #ff6b6b;
+        }
+        .leaderboard-rank.top-1 {
+            color: #ffd700;
+        }
+        .leaderboard-rank.top-2 {
+            color: #c0c0c0;
+        }
+        .leaderboard-rank.top-3 {
+            color: #cd7f32;
+        }
+        .leaderboard-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .leaderboard-details {
+            flex: 1;
+        }
+        .leaderboard-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+        .leaderboard-stats {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .leaderboard-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #22c55e;
+            text-align: right;
+        }
+        .bet-history {
+            max-height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+        }
+        .bet-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .bet-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            border-left-color: #3b82f6;
+        }
+        .bet-item.win {
+            border-left-color: #22c55e;
+        }
+        .bet-item.loss {
+            border-left-color: #ef4444;
+        }
+        .bet-item.pending {
+            border-left-color: #f59e0b;
+        }
+        .bet-icon {
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+        }
+        .bet-item.win .bet-icon {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+        .bet-item.loss .bet-icon {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        .bet-item.pending .bet-icon {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+        }
+        .bet-details {
+            flex: 1;
+        }
+        .bet-description {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+        .bet-info {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .bet-amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: right;
+        }
+        .bet-item.win .bet-amount {
+            color: #22c55e;
+        }
+        .bet-item.loss .bet-amount {
+            color: #ef4444;
+        }
+        .bet-item.pending .bet-amount {
+            color: #f59e0b;
+        }
+        .member-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .member-btn {
+            padding: 1rem 1.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .member-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        .member-btn.primary {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            color: white;
+            border-color: #3b82f6;
+        }
+        .member-btn.primary:hover {
+            background: linear-gradient(45deg, #1d4ed8, #3b82f6);
+            color: white;
+        }
+        .guild-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .guild-info-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid #3b82f6;
+            text-align: center;
+        }
+        .guild-info-label {
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .guild-info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="main-bg"></div>
+    <div class="page-bg" style="background-image: url('/static/images/lobby.webp');"></div>
+    
+    <!-- Fixed Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> BetGenius AI
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/server-list" class="nav-link">Servers</a></li>
+                <li><a href="/guild/{{ guild_id }}/member" class="nav-link active">{{ guild.guild_name }}</a></li>
+                <li><a href="/auth/logout" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding-top: 100px; max-width: 1400px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem;">
+        <!-- Member Header -->
+        <div class="member-header fade-in">
+            <div class="content" style="text-align: center;">
+                <div class="member-badge">
+                    <i class="fas fa-user"></i>
+                    Member Access
+                </div>
+                <h1 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem;">
+                    <i class="fab fa-discord"></i>
+                    {{ guild.guild_name }}
+                </h1>
+                <p style="font-size: 1.1rem; opacity: 0.9; margin: 0;">
+                    Your personal betting statistics and guild leaderboard
+                </p>
+            </div>
+        </div>
+
+        <!-- Personal Statistics -->
+        <section class="member-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-user-chart"></i>
+                Your Statistics
+            </h2>
+            <div class="personal-stats">
+                <div class="personal-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dice"></i>
+                    </div>
+                    <div class="stat-value">{{ user_stats.total_bets }}</div>
+                    <div class="stat-label">Total Bets</div>
+                </div>
+                <div class="personal-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-value">{{ user_stats.wins }}</div>
+                    <div class="stat-label">Wins</div>
+                </div>
+                <div class="personal-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-value">{{ "%.1f"|format(user_stats.win_rate) }}%</div>
+                    <div class="stat-label">Win Rate</div>
+                </div>
+                <div class="personal-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-value">${{ "%.2f"|format(user_stats.total_winnings) }}</div>
+                    <div class="stat-label">Total Winnings</div>
+                </div>
+                <div class="personal-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-value">${{ "%.2f"|format(user_stats.avg_bet) }}</div>
+                    <div class="stat-label">Avg Bet Size</div>
+                </div>
+                <div class="personal-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="stat-value">#{{ user_stats.rank }}</div>
+                    <div class="stat-label">Guild Rank</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guild Leaderboard -->
+        <section class="member-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-crown"></i>
+                Guild Leaderboard
+            </h2>
+            <div class="leaderboard">
+                {% for player in leaderboard %}
+                <div class="leaderboard-item {% if player[0] == session.discord_user.id %}current-user{% endif %}">
+                    <div class="leaderboard-rank {% if loop.index <= 3 %}top-{{ loop.index }}{% endif %}">
+                        {% if loop.index == 1 %}
+                            <i class="fas fa-crown"></i>
+                        {% elif loop.index == 2 %}
+                            <i class="fas fa-medal"></i>
+                        {% elif loop.index == 3 %}
+                            <i class="fas fa-award"></i>
+                        {% else %}
+                            {{ loop.index }}
+                        {% endif %}
+                    </div>
+                    <div class="leaderboard-avatar">
+                        {{ player[1][:2].upper() }}
+                    </div>
+                    <div class="leaderboard-details">
+                        <div class="leaderboard-name">
+                            {{ player[1] }}
+                            {% if player[0] == session.discord_user.id %}
+                                <span style="color: #3b82f6; font-size: 0.8rem;">(You)</span>
+                            {% endif %}
+                        </div>
+                        <div class="leaderboard-stats">
+                            {{ player[3] }} bets • {{ "%.1f"|format(player[4]) }}% win rate
+                        </div>
+                    </div>
+                    <div class="leaderboard-value">
+                        ${{ "%.2f"|format(player[2]) }}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if not leaderboard %}
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>No betting activity yet</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Recent Bets -->
+        <section class="member-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Your Recent Bets
+            </h2>
+            <div class="bet-history">
+                {% for bet in user_bets %}
+                <div class="bet-item {% if bet[4] %}win{% elif bet[5] %}loss{% else %}pending{% endif %}">
+                    <div class="bet-icon">
+                        {% if bet[4] %}
+                            <i class="fas fa-trophy"></i>
+                        {% elif bet[5] %}
+                            <i class="fas fa-times"></i>
+                        {% else %}
+                            <i class="fas fa-clock"></i>
+                        {% endif %}
+                    </div>
+                    <div class="bet-details">
+                        <div class="bet-description">{{ bet[2] or 'Bet' }}</div>
+                        <div class="bet-info">
+                            {% if bet[4] %}
+                                Won • {{ bet[6].strftime('%b %d, %Y') }}
+                            {% elif bet[5] %}
+                                Lost • {{ bet[6].strftime('%b %d, %Y') }}
+                            {% else %}
+                                Pending • {{ bet[6].strftime('%b %d, %Y') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="bet-amount">
+                        {% if bet[4] %}
+                            +${{ "%.2f"|format(bet[1]) }}
+                        {% elif bet[5] %}
+                            -${{ "%.2f"|format(bet[1]) }}
+                        {% else %}
+                            ${{ "%.2f"|format(bet[1]) }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if not user_bets %}
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    <i class="fas fa-dice" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>No bets placed yet</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start betting in Discord to see your history here!</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Guild Overview -->
+        <section class="member-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                Guild Overview
+            </h2>
+            <div class="guild-info">
+                <div class="guild-info-item">
+                    <div class="guild-info-label">Total Members</div>
+                    <div class="guild-info-value">{{ guild_stats.total_users }}</div>
+                </div>
+                <div class="guild-info-item">
+                    <div class="guild-info-label">Total Bets</div>
+                    <div class="guild-info-value">{{ guild_stats.total_bets }}</div>
+                </div>
+                <div class="guild-info-item">
+                    <div class="guild-info-label">Total Volume</div>
+                    <div class="guild-info-value">${{ "%.0f"|format(guild_stats.total_volume) }}</div>
+                </div>
+                <div class="guild-info-item">
+                    <div class="guild-info-label">Premium Status</div>
+                    <div class="guild-info-value">
+                        {% if guild.premium_enabled %}
+                            <i class="fas fa-crown" style="color: #ffd700;"></i>
+                        {% else %}
+                            Basic
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Member Actions -->
+        <section class="member-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-gamepad"></i>
+                Quick Actions
+            </h2>
+            <div class="member-actions">
+                <a href="/guild/{{ guild_id }}/live-scores" class="member-btn primary">
+                    <i class="fas fa-chart-line"></i>
+                    Live Scores
+                </a>
+                <a href="/guild/{{ guild_id }}/player-stats" class="member-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    Player Stats
+                </a>
+                <a href="/guild/{{ guild_id }}/odds-buster" class="member-btn">
+                    <i class="fas fa-brain"></i>
+                    Odds Buster
+                </a>
+                <a href="https://discord.gg/your-guild" class="member-btn" target="_blank">
+                    <i class="fab fa-discord"></i>
+                    Join Discord
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+            <p style="color: #666; margin: 0;">&copy; 2025 BetGenius AI - Member Dashboard</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add fade-in animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
