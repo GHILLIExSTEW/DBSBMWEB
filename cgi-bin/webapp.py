@@ -186,7 +186,7 @@ def get_active_guilds():
             END), 0) as yearly_units
         FROM guild_settings gs
         LEFT JOIN bets b ON gs.guild_id = b.guild_id
-        WHERE gs.is_active = 1
+    WHERE gs.is_active = TRUE
         GROUP BY gs.guild_id, gs.guild_name, gs.subscription_level
         ORDER BY yearly_units DESC
         LIMIT 10
@@ -780,7 +780,7 @@ def get_bot_guilds():
             return []
         
         cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT DISTINCT guild_id FROM guild_settings WHERE is_active = 1")
+    cursor.execute("SELECT DISTINCT guild_id FROM guild_settings WHERE is_active = TRUE")
         bot_guilds = [str(row['guild_id']) for row in cursor.fetchall()]
         cursor.close()
         connection.close()
@@ -954,11 +954,11 @@ def dashboard():
             COUNT(DISTINCT u.user_id) as total_users
         FROM guilds g
         LEFT JOIN guild_settings gs ON g.guild_id = gs.guild_id
-        LEFT JOIN bets b ON g.guild_id = b.guild_id
-        LEFT JOIN users u ON g.guild_id = u.guild_id
-        GROUP BY g.guild_id, g.guild_name, gs.embed_channel_1, gs.command_channel_1, 
-                 gs.admin_role, gs.base_unit_value, gs.premium_enabled
-        ORDER BY g.guild_name
+    LEFT JOIN bets b ON gs.guild_id = b.guild_id
+    LEFT JOIN users u ON g.guild_id = u.guild_id
+    GROUP BY g.guild_id, g.guild_name, gs.embed_channel_1, gs.command_channel_1, 
+         gs.admin_role, gs.base_unit_value, gs.premium_enabled
+    ORDER BY g.guild_name
         """
         
         cursor.execute(query)
@@ -1164,8 +1164,8 @@ def guild_admin_page(guild_id):
                     SELECT 
                         COUNT(DISTINCT b.user_id) as total_users,
                         COUNT(b.bet_id) as total_bets,
-                        SUM(CASE WHEN b.bet_won = 1 THEN 1 ELSE 0 END) as total_wins,
-                        SUM(CASE WHEN b.bet_loss = 1 THEN 1 ELSE 0 END) as total_losses,
+                        SUM(CASE WHEN b.bet_won = TRUE THEN 1 ELSE 0 END) as total_wins,
+                        SUM(CASE WHEN b.bet_loss = TRUE THEN 1 ELSE 0 END) as total_losses,
                         AVG(b.bet_amount) as avg_bet_amount,
                         SUM(b.bet_amount) as total_volume
                     FROM bets b
@@ -1254,8 +1254,8 @@ def guild_member_page(guild_id):
                 cursor.execute("""
                     SELECT 
                         COUNT(b.bet_id) as my_total_bets,
-                        SUM(CASE WHEN b.bet_won = 1 THEN 1 ELSE 0 END) as my_wins,
-                        SUM(CASE WHEN b.bet_loss = 1 THEN 1 ELSE 0 END) as my_losses,
+                        SUM(CASE WHEN b.bet_won = TRUE THEN 1 ELSE 0 END) as my_wins,
+                        SUM(CASE WHEN b.bet_loss = TRUE THEN 1 ELSE 0 END) as my_losses,
                         AVG(b.bet_amount) as my_avg_bet,
                         SUM(b.bet_amount) as my_total_wagered
                     FROM bets b
@@ -1268,8 +1268,8 @@ def guild_member_page(guild_id):
                     SELECT 
                         b.user_id,
                         COUNT(b.bet_id) as total_bets,
-                        SUM(CASE WHEN b.bet_won = 1 THEN 1 ELSE 0 END) as wins,
-                        SUM(CASE WHEN b.bet_loss = 1 THEN 1 ELSE 0 END) as losses,
+                        SUM(CASE WHEN b.bet_won = TRUE THEN 1 ELSE 0 END) as wins,
+                        SUM(CASE WHEN b.bet_loss = TRUE THEN 1 ELSE 0 END) as losses,
                         SUM(b.bet_amount) as total_wagered
                     FROM bets b
                     WHERE b.guild_id = %s
@@ -1613,7 +1613,7 @@ def guild_public_page(guild_id):
                     gc.*
                 FROM guild_settings gs
                 LEFT JOIN guild_customization gc ON gs.guild_id = gc.guild_id
-                WHERE gs.guild_id = %s AND gs.is_active = 1
+                WHERE gs.guild_id = %s AND gs.is_active = TRUE
             """, (guild_id,))
             
             guild_data = cursor.fetchone()
